@@ -1,0 +1,95 @@
+@page "/docs/quick-start"
+
+<PageTitle>Quick Start - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Quick Start</h1>
+    <p class="docs-lead">Use Tldraw.Blazor as a component in your Blazor app. Create shapes programmatically or let users draw interactively.</p>
+
+    <h2 id="component">
+        Use as a Component
+        <a class="docs-anchor" href="#component">#</a>
+    </h2>
+
+    <CodeBlock Language="razor" Code="@(@"@using Tldraw.Blazor.Skia
+@using Tldraw.Blazor.Core.Editor
+@using Tldraw.Blazor.Core.Store
+
+<TldrawCanvas Editor=""_editor"" />
+
+@code {
+    private Editor _editor = new();
+
+    protected override void OnInitialized()
+    {
+        _editor.CreateShape(""geo"", 100, 100);
+        var rect = _editor.Store.GetAllShapes().Last();
+        rect.Width = 200;
+        rect.Height = 120;
+        rect.Style.Fill = ""#E3F2FD"";
+        rect.Style.Color = ""#1565C0"";
+        rect.Style.BorderRadius = 8;
+        if (rect.Props is TLGeoProps props)
+        {
+            props.GeoType = ""rectangle"";
+            props.Text = ""Hello!"";
+        }
+    }
+}")" />
+
+    <h2 id="programmatic">
+        Programmatic Shape Creation
+        <a class="docs-anchor" href="#programmatic">#</a>
+    </h2>
+
+    <CodeBlock Language="csharp" Code="@(@"// Create different shape types
+_editor.CreateShape(""geo"", 100, 100);      // Rectangle
+_editor.CreateShape(""draw"", 200, 200);     // Freehand
+_editor.CreateShape(""text"", 300, 100);     // Text
+_editor.CreateShape(""note"", 400, 200);     // Sticky note
+_editor.CreateShape(""arrow"", 100, 300);    // Arrow
+_editor.CreateShape(""line"", 200, 400);     // Line
+_editor.CreateShape(""frame"", 50, 50);      // Frame
+_editor.CreateShape(""image"", 300, 300);    // Image
+
+// Customize shape
+var shape = _editor.CreateShape(""geo"", 100, 100);
+shape.Width = 300;
+shape.Height = 200;
+shape.Style.Fill = ""#FFEB3B"";
+shape.Style.Color = ""#F57F17"";
+shape.Style.StrokeWidth = 3;
+shape.Style.Opacity = 0.8;
+shape.Style.DashPattern = ""dashed"";
+
+// Geo-specific props
+if (shape.Props is TLGeoProps geo)
+{
+    geo.GeoType = ""star"";  // rectangle, ellipse, diamond, star, hexagon, triangle
+    geo.Text = ""Star!"";
+}")" />
+
+    <h2 id="events">
+        Editor Events
+        <a class="docs-anchor" href="#events">#</a>
+    </h2>
+
+    <CodeBlock Language="csharp" Code="@(@"// Listen for state changes
+_editor.StateChanged += () =>
+{
+    Console.WriteLine(""Canvas re-rendered"");
+};
+
+// Listen for store changes
+_editor.Store.Changed += changes =>
+{
+    foreach (var change in changes)
+        Console.WriteLine($""{change.Type}: {change.RecordId}"");
+};
+
+// Listen for selection changes
+_editor.Selection.SelectionChanged += () =>
+{
+    Console.WriteLine($""Selected: {_editor.Selection.Count} shapes"");
+}")" />
+</div>

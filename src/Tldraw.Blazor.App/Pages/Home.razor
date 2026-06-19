@@ -1,0 +1,434 @@
+@page "/"
+@using Tldraw.Blazor.Skia
+@using Tldraw.Blazor.Core.Editor
+@using Tldraw.Blazor.Core.Store
+@using Tldraw.Blazor.App.Components
+@inject IJSRuntime JS
+
+<PageTitle>tldraw – Blazor SkiaSharp</PageTitle>
+
+<div style="width: 100%; height: 100%; display: flex; flex-direction: column;" class="@(_isDark ? "dark-mode" : "")">
+
+    <!-- Toolbar -->
+    <div style="display: flex; align-items: center; gap: 4px; padding: 6px 12px;
+                background: #fff; border-bottom: 1px solid #e0e0e0; flex-shrink: 0;">
+
+        <button class="tool-btn @ToolBtnClass("select")" @onclick='() => SetTool("select")'
+                title="Select (V)">▢ Select</button>
+        <button class="tool-btn @ToolBtnClass("hand")" @onclick='() => SetTool("hand")'
+                title="Hand (H)">✋ Hand</button>
+        <button class="tool-btn @ToolBtnClass("draw")" @onclick='() => SetTool("draw")'
+                title="Draw (D)">✏️ Draw</button>
+
+        <span style="margin: 0 4px; color: #ccc;">|</span>
+
+        <button class="tool-btn @ToolBtnClass("geo:rectangle")" @onclick='() => SetGeoTool("rectangle")'
+                title="Rectangle">▭ Rect</button>
+        <button class="tool-btn @ToolBtnClass("geo:ellipse")" @onclick='() => SetGeoTool("ellipse")'
+                title="Ellipse">⬭ Ellipse</button>
+        <button class="tool-btn @ToolBtnClass("geo:diamond")" @onclick='() => SetGeoTool("diamond")'
+                title="Diamond">◇ Diamond</button>
+        <button class="tool-btn @ToolBtnClass("geo:star")" @onclick='() => SetGeoTool("star")'
+                title="Star">⭐ Star</button>
+        <button class="tool-btn @ToolBtnClass("geo:hexagon")" @onclick='() => SetGeoTool("hexagon")'
+                title="Hexagon">⬡ Hex</button>
+        <button class="tool-btn @ToolBtnClass("geo:triangle")" @onclick='() => SetGeoTool("triangle")'
+                title="Triangle">△ Tri</button>
+
+        <span style="margin: 0 4px; color: #ccc;">|</span>
+
+        <button class="tool-btn @ToolBtnClass("text")" @onclick='() => SetTool("text")'
+                title="Text (T)">𝐓 Text</button>
+        <button class="tool-btn @ToolBtnClass("arrow")" @onclick='() => SetTool("arrow")'
+                title="Arrow (A)">➜ Arrow</button>
+        <button class="tool-btn @ToolBtnClass("eraser")" @onclick='() => SetTool("eraser")'
+                title="Eraser (E)">🧹 Erase</button>
+
+        <span style="margin: 0 4px; color: #ccc;">|</span>
+
+        <button class="tool-btn" @onclick="ExportJson" title="Export JSON">💾 JSON</button>
+        <button class="tool-btn" @onclick="ExportPng" title="Export PNG">🖼️ PNG</button>
+        <button class="tool-btn" @onclick="ImportJson" title="Import JSON">📂 Import</button>
+        <button class="tool-btn" @onclick="AddImage" title="Add Image">🖼️+ Image</button>
+
+        <span style="flex: 1;"></span>
+
+        <!-- Zoom controls -->
+        <button class="tool-btn" @onclick='() => ZoomBy(-0.2)' title="Zoom Out">➖</button>
+        <span style="font-size: 12px; color: #666; min-width: 45px; text-align: center;">
+            @($"{_editor.Camera.Zoom:P0}")
+        </span>
+        <button class="tool-btn" @onclick='() => ZoomBy(0.2)' title="Zoom In">➕</button>
+        <button class="tool-btn" @onclick="ZoomFit" title="Fit to Screen">⊞ Fit</button>
+        <button class="tool-btn" @onclick="ZoomReset" title="Reset Zoom">1:1</button>
+
+        <span style="margin: 0 4px; color: #ccc;">|</span>
+
+        <button class="tool-btn" @onclick='() => _showShortcuts = !_showShortcuts' title="Keyboard Shortcuts">⌨️</button>
+        <DarkModeToggle @bind-IsDark="_isDark" />
+
+        <span style="font-size: 12px; color: #888;">
+            <b>@_editor.ActiveTool.Id</b> &nbsp;|&nbsp;
+            @(_autoSaveStatus)
+        </span>
+    </div>
+
+    <!-- Canvas -->
+    <div style="flex: 1; min-height: 0; position: relative;"
+         @oncontextmenu="OnContextMenu" @oncontextmenu:preventDefault>
+        <TldrawCanvas Editor="_editor" />
+        <StylePanel Editor="_editor" />
+        <ContextMenu @ref="_contextMenu" Editor="_editor" />
+        <Minimap Editor="_editor" />
+        <PagesPanel Editor="_editor" />
+
+        @if (_showShortcuts)
+        {
+            <div class="shortcuts-panel">
+                <div class="shortcuts-title">⌨️ Keyboard Shortcuts</div>
+                <div class="shortcuts-grid">
+                    <div><b>V</b> Select</div><div><b>D</b> Draw</div>
+                    <div><b>G</b> Geo</div><div><b>H</b> Hand</div>
+                    <div><b>T</b> Text</div><div><b>A</b> Arrow</div>
+                    <div><b>E</b> Eraser</div><div><b>Space+Drag</b> Pan</div>
+                    <div><b>Ctrl+Z</b> Undo</div><div><b>Ctrl+Y</b> Redo</div>
+                    <div><b>Ctrl+C</b> Copy</div><div><b>Ctrl+V</b> Paste</div>
+                    <div><b>Ctrl+X</b> Cut</div><div><b>Del</b> Delete</div>
+                    <div><b>Ctrl+A</b> Select All</div><div><b>Esc</b> Deselect</div>
+                    <div><b>Scroll</b> Zoom</div><div><b>Drag</b> Move/Resize</div>
+                    <div><b>Shift+Drag</b> Constrain</div><div><b>Alt+Drag</b> From Center</div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .tool-btn {
+        padding: 4px 10px;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        background: transparent;
+        cursor: pointer;
+        font-size: 13px;
+        color: #444;
+        transition: all 0.15s;
+    }
+    .tool-btn:hover {
+        background: #f0f0f0;
+    }
+    .tool-btn.active {
+        background: #E3F2FD;
+        border-color: #1565C0;
+        color: #1565C0;
+        font-weight: 600;
+    }
+    .shortcuts-panel {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: rgba(255,255,255,0.95);
+        border-radius: 10px;
+        padding: 12px 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        font-size: 12px;
+        z-index: 200;
+        max-width: 400px;
+        backdrop-filter: blur(8px);
+    }
+    .shortcuts-title {
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 8px;
+        color: #333;
+    }
+    .shortcuts-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px 16px;
+        color: #555;
+    }
+    .shortcuts-grid b {
+        color: #1565C0;
+        margin-right: 4px;
+    }
+    /* Dark mode */
+    .dark-mode { background: #1e1e1e; color: #e0e0e0; }
+    .dark-mode .tool-btn { color: #ccc; }
+    .dark-mode .tool-btn:hover { background: rgba(255,255,255,0.1); }
+    .dark-mode .tool-btn.active { background: #1a3a5c; border-color: #4a9eff; color: #4a9eff; }
+    .dark-mode .style-panel,
+    .dark-mode .context-menu,
+    .dark-mode .minimap-container,
+    .dark-mode .pages-panel,
+    .dark-mode .shortcuts-panel {
+        background: rgba(40, 40, 40, 0.95);
+        color: #e0e0e0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+    .dark-mode .style-section label { color: #aaa; }
+    .dark-mode .ctx-item { color: #ddd; }
+    .dark-mode .ctx-item:hover { background: rgba(255,255,255,0.08); }
+    .dark-mode .ctx-separator { background: #444; }
+    .dark-mode .page-item.active { background: #1a3a5c; color: #4a9eff; }
+    .dark-mode .pages-header { background: rgba(255,255,255,0.03); color: #aaa; }
+    .dark-mode .minimap-header { background: rgba(255,255,255,0.03); color: #aaa; }
+</style>
+
+@code {
+    private Editor _editor = new();
+    private string _activeGeoType = "rectangle";
+    private ContextMenu? _contextMenu;
+    private string _autoSaveStatus = "idle";
+    private System.Threading.Timer? _autoSaveTimer;
+    private bool _showShortcuts;
+    private bool _isDark;
+
+    private string ToolBtnClass(string toolKey)
+    {
+        var currentTool = _editor.ActiveTool.Id;
+        if (toolKey.StartsWith("geo:"))
+        {
+            var geoType = toolKey[4..];
+            return currentTool == "geo" && _activeGeoType == geoType ? "active" : "";
+        }
+        return currentTool == toolKey ? "active" : "";
+    }
+
+    private void SetTool(string toolId)
+    {
+        _editor.SetActiveTool(toolId);
+        StateHasChanged();
+    }
+
+    private void SetGeoTool(string geoType)
+    {
+        _activeGeoType = geoType;
+        var geoTool = _editor.GetTool("geo") as Tldraw.Blazor.Core.Tools.GeoTool;
+        if (geoTool != null) geoTool.GeoType = geoType;
+        _editor.SetActiveTool("geo");
+        StateHasChanged();
+    }
+
+    private void OnContextMenu(MouseEventArgs e)
+    {
+        _contextMenu?.Show(e.ClientX, e.ClientY);
+    }
+
+    // ── Auto-save ───────────────────────────────────────────
+
+    protected override async Task OnInitializedAsync()
+    {
+        _editor.StateChanged += () => InvokeAsync(StateHasChanged);
+
+        // Load from localStorage if available
+        await LoadFromStorage();
+
+        // Auto-save every 5 seconds
+        _autoSaveTimer = new System.Threading.Timer(async _ =>
+        {
+            await SaveToStorage();
+        }, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
+
+        if (_editor.Store.GetAllShapes().Count == 0)
+            CreateDemoShapes();
+    }
+
+    private async Task SaveToStorage()
+    {
+        try
+        {
+            var json = _editor.Store.GetSnapshot().ToJson();
+            await JS.InvokeVoidAsync("localStorage.setItem", "tldraw-blazor-data", json);
+            _autoSaveStatus = "saved";
+        }
+        catch { _autoSaveStatus = "error"; }
+    }
+
+    private async Task LoadFromStorage()
+    {
+        try
+        {
+            var json = await JS.InvokeAsync<string>("localStorage.getItem", "tldraw-blazor-data");
+            if (!string.IsNullOrEmpty(json))
+            {
+                var snapshot = TLStoreSnapshot.FromJson(json);
+                if (snapshot != null && snapshot.Records.Count > 0)
+                {
+                    _editor.Store.LoadSnapshot(snapshot);
+                    _autoSaveStatus = "loaded";
+                }
+            }
+        }
+        catch { /* ignore */ }
+    }
+
+    // ── Export / Import ─────────────────────────────────────
+
+    private async Task ExportJson()
+    {
+        var json = _editor.Store.GetSnapshot().ToJson();
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", json);
+        _autoSaveStatus = "exported to clipboard";
+    }
+
+    private async Task ImportJson()
+    {
+        try
+        {
+            var json = await JS.InvokeAsync<string>("navigator.clipboard.readText");
+            if (!string.IsNullOrEmpty(json))
+            {
+                var snapshot = TLStoreSnapshot.FromJson(json);
+                if (snapshot != null)
+                {
+                    _editor.PushUndo();
+                    _editor.Store.LoadSnapshot(snapshot);
+                    _autoSaveStatus = "imported";
+                }
+            }
+        }
+        catch { _autoSaveStatus = "import failed"; }
+    }
+
+    // ── Zoom controls ───────────────────────────────────────
+
+    private void ZoomBy(double delta)
+    {
+        var center = new SkiaSharp.SKPoint(
+            (float)(JS.InvokeAsync<double>("eval", "window.innerWidth").Result / 2),
+            (float)(JS.InvokeAsync<double>("eval", "window.innerHeight").Result / 2));
+        _editor.Camera.ZoomAt(center, delta);
+        _editor.Invalidate();
+    }
+
+    private void ZoomFit()
+    {
+        _editor.Camera.Reset();
+        _editor.Invalidate();
+    }
+
+    private void ZoomReset()
+    {
+        _editor.Camera.Zoom = 1.0;
+        _editor.Invalidate();
+    }
+
+    private async Task ExportPng()
+    {
+        try
+        {
+            var pngBytes = _editor.ExportToPng();
+            if (pngBytes != null)
+            {
+                var base64 = Convert.ToBase64String(pngBytes);
+                await JS.InvokeVoidAsync("eval",
+                    $"var a=document.createElement('a');a.href='data:image/png;base64,{base64}';a.download='tldraw.png';a.click()");
+                _autoSaveStatus = "PNG exported";
+            }
+        }
+        catch { _autoSaveStatus = "PNG export failed"; }
+    }
+
+    private async Task AddImage()
+    {
+        try
+        {
+            var result = await JS.InvokeAsync<ImageLoadResult>("tldrawImageInterop.loadImageFile");
+            if (result != null && !string.IsNullOrEmpty(result.DataUri))
+            {
+                // Get dimensions
+                var dims = await JS.InvokeAsync<ImageDimensions>("tldrawImageInterop.getImageDimensions", result.DataUri);
+
+                // Create image shape at center of viewport
+                var cam = _editor.Camera;
+                var centerX = cam.Position.X + cam.ViewportSize.Width / cam.Zoom / 2 - dims.Width / 2;
+                var centerY = cam.Position.Y + cam.ViewportSize.Height / cam.Zoom / 2 - dims.Height / 2;
+
+                _editor.CreateImageShape(result.Name, result.DataUri, dims.Width, dims.Height, centerX, centerY);
+                _autoSaveStatus = "Image added";
+            }
+        }
+        catch { _autoSaveStatus = "Image load failed"; }
+    }
+
+    private class ImageLoadResult
+    {
+        public string Name { get; set; } = "";
+        public string DataUri { get; set; } = "";
+    }
+
+    private class ImageDimensions
+    {
+        public double Width { get; set; }
+        public double Height { get; set; }
+    }
+
+    // ── Demo shapes ─────────────────────────────────────────
+
+    private void CreateDemoShapes()
+    {
+        _editor.CreateShape("frame", 50, 50);
+        var frame = _editor.Store.GetAllShapes().Last();
+        frame.Width = 850; frame.Height = 620; frame.Index = "a";
+        if (frame.Props is TLFrameProps fp) fp.Name = "Demo Frame";
+
+        _editor.CreateShape("geo", 100, 100);
+        var rect = _editor.Store.GetAllShapes().Last();
+        rect.Width = 200; rect.Height = 120;
+        rect.Style.Fill = "#E3F2FD"; rect.Style.Color = "#1565C0"; rect.Style.BorderRadius = 8;
+        if (rect.Props is TLGeoProps rp) { rp.GeoType = "rectangle"; rp.Text = "Rectangle"; }
+
+        _editor.CreateShape("geo", 400, 100);
+        var ellipse = _editor.Store.GetAllShapes().Last();
+        ellipse.Width = 180; ellipse.Height = 120;
+        ellipse.Style.Fill = "#FCE4EC"; ellipse.Style.Color = "#C62828";
+        if (ellipse.Props is TLGeoProps ep) { ep.GeoType = "ellipse"; ep.Text = "Ellipse"; }
+
+        _editor.CreateShape("geo", 680, 100);
+        var diamond = _editor.Store.GetAllShapes().Last();
+        diamond.Width = 140; diamond.Height = 140;
+        diamond.Style.Fill = "#FFF3E0"; diamond.Style.Color = "#E65100";
+        if (diamond.Props is TLGeoProps dp) { dp.GeoType = "diamond"; dp.Text = "Diamond"; }
+
+        _editor.CreateShape("geo", 100, 320);
+        var star = _editor.Store.GetAllShapes().Last();
+        star.Width = 140; star.Height = 140;
+        star.Style.Fill = "#FFF9C4"; star.Style.Color = "#F9A825";
+        if (star.Props is TLGeoProps sp) sp.GeoType = "star";
+
+        _editor.CreateShape("geo", 320, 300);
+        var hex = _editor.Store.GetAllShapes().Last();
+        hex.Width = 150; hex.Height = 130;
+        hex.Style.Fill = "#E8F5E9"; hex.Style.Color = "#2E7D32";
+        if (hex.Props is TLGeoProps hp) hp.GeoType = "hexagon";
+
+        _editor.CreateShape("geo", 550, 300);
+        var tri = _editor.Store.GetAllShapes().Last();
+        tri.Width = 150; tri.Height = 130;
+        tri.Style.Fill = "#F3E5F5"; tri.Style.Color = "#6A1B9A";
+        if (tri.Props is TLGeoProps tp) tp.GeoType = "triangle";
+
+        _editor.CreateShape("text", 100, 520);
+        var text = _editor.Store.GetAllShapes().Last();
+        if (text.Props is TLTextProps txp) { txp.Text = "Hello, tldraw!"; txp.FontSize = 32; }
+        text.Style.Color = "#1565C0";
+
+        _editor.CreateShape("note", 400, 500);
+        var note = _editor.Store.GetAllShapes().Last();
+        if (note.Props is TLNoteProps np) { np.Text = "Right-click\nfor menu!"; np.NoteColor = "#FFEB3B"; }
+
+        _editor.CreateShape("line", 700, 500);
+        var line = _editor.Store.GetAllShapes().Last();
+        line.Width = 200; line.Height = 100;
+        line.Style.Color = "#1565C0"; line.Style.StrokeWidth = 3;
+        if (line.Props is TLLineProps lp) lp.Points = new() { new() { 0, 0 }, new() { 100, 80 }, new() { 200, 20 } };
+
+        _editor.Invalidate();
+    }
+
+    public void Dispose()
+    {
+        _autoSaveTimer?.Dispose();
+    }
+}

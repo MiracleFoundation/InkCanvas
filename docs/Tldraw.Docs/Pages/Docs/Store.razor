@@ -1,0 +1,49 @@
+@page "/docs/store"
+
+<PageTitle>Store & Records - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Store & Records</h1>
+    <p class="docs-lead">The <code>TLStore</code> is a reactive record store. All shapes, pages, bindings, and assets are <code>TLRecord</code> subclasses.</p>
+
+    <h2 id="record-types">
+        Record Types
+        <a class="docs-anchor" href="#record-types">#</a>
+    </h2>
+
+    <ApiTable>
+        <ApiRow Name="TLShapeRecord" Type="TLRecord" Default="" Desc="Shape on canvas (position, size, rotation, style, props)" />
+        <ApiRow Name="TLPageRecord" Type="TLRecord" Default="" Desc="Document page" />
+        <ApiRow Name="TLBindingRecord" Type="TLRecord" Default="" Desc="Arrow-to-shape binding" />
+        <ApiRow Name="TLAssetRecord" Type="TLRecord" Default="" Desc="Image/video asset" />
+    </ApiTable>
+
+    <h2 id="usage">
+        Usage
+        <a class="docs-anchor" href="#usage">#</a>
+    </h2>
+
+    <CodeBlock Language="csharp" Code="@(@"// Get all shapes
+var shapes = editor.Store.GetAllShapes();
+
+// Get specific record
+var shape = editor.Store.Get<TLShapeRecord>(id);
+
+// Listen for changes
+editor.Store.Changed += changes => {
+    foreach (var change in changes)
+    {
+        Console.WriteLine($""{change.Type}: {change.RecordId}"");
+        if (change.Record is TLShapeRecord shape)
+            Console.WriteLine($""  Shape: {shape.ShapeType}"");
+    }
+};
+
+// Snapshot (for undo/save)
+var snapshot = editor.Store.GetSnapshot();
+editor.Store.LoadSnapshot(snapshot);
+
+// JSON serialization
+var json = snapshot.ToJson();
+var restored = TLStoreSnapshot.FromJson(json);")" />
+</div>

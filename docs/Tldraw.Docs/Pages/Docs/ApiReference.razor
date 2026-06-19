@@ -1,0 +1,94 @@
+@page "/docs/api"
+
+<PageTitle>API Reference - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>API Reference</h1>
+    <p class="docs-lead">Full reference for every class, method, and property in Tldraw.Blazor.</p>
+
+    <h2 id="editor">Editor <a class="docs-anchor" href="#editor">#</a></h2>
+    <p>Central engine class. See <a href="docs/editor">Editor</a> for details.</p>
+
+    <h3>Methods</h3>
+    <ApiTable>
+        <ApiRow Name="CreateShape(type, x, y)" Type="TLShapeRecord?" Default="" Desc="Create shape at position" />
+        <ApiRow Name="SetActiveTool(id)" Type="void" Default="" Desc="Switch active tool" />
+        <ApiRow Name="GetTool(id)" Type="StateNode?" Default="" Desc="Get tool by ID" />
+        <ApiRow Name="PushUndo()" Type="void" Default="" Desc="Capture undo snapshot" />
+        <ApiRow Name="Undo()" Type="void" Default="" Desc="Undo last action" />
+        <ApiRow Name="Redo()" Type="void" Default="" Desc="Redo last undone action" />
+        <ApiRow Name="Copy()" Type="void" Default="" Desc="Copy selected to clipboard" />
+        <ApiRow Name="Paste()" Type="void" Default="" Desc="Paste from clipboard" />
+        <ApiRow Name="Cut()" Type="void" Default="" Desc="Cut selected" />
+        <ApiRow Name="Align(type)" Type="void" Default="" Desc="Align selected shapes" />
+        <ApiRow Name="Distribute(type)" Type="void" Default="" Desc="Distribute selected shapes" />
+        <ApiRow Name="BringToFront()" Type="void" Default="" Desc="Bring to front" />
+        <ApiRow Name="SendToBack()" Type="void" Default="" Desc="Send to back" />
+        <ApiRow Name="BringForward()" Type="void" Default="" Desc="Bring forward one layer" />
+        <ApiRow Name="SendBackward()" Type="void" Default="" Desc="Send backward one layer" />
+        <ApiRow Name="GroupSelected()" Type="void" Default="" Desc="Group selected shapes" />
+        <ApiRow Name="UngroupSelected()" Type="void" Default="" Desc="Ungroup selected groups" />
+        <ApiRow Name="ExportToPng()" Type="byte[]?" Default="" Desc="Export canvas as PNG bytes" />
+        <ApiRow Name="ExportToSvg()" Type="string" Default="" Desc="Export as SVG string" />
+        <ApiRow Name="CreateImageShape(...)" Type="TLShapeRecord" Default="" Desc="Create image shape from data URI" />
+        <ApiRow Name="Invalidate()" Type="void" Default="" Desc="Trigger re-render" />
+    </ApiTable>
+
+    <h2 id="camera">Camera <a class="docs-anchor" href="#camera">#</a></h2>
+
+    <ApiTable>
+        <ApiRow Name="Position" Type="SKPointd" Default="0,0" Desc="Camera position in world space" />
+        <ApiRow Name="Zoom" Type="double" Default="1.0" Desc="Zoom level (0.05–20.0)" />
+        <ApiRow Name="ViewportSize" Type="SKSize" Default="800x600" Desc="Viewport size in screen pixels" />
+        <ApiRow Name="Pan(dx, dy)" Type="void" Default="" Desc="Pan by screen delta" />
+        <ApiRow Name="ZoomAt(point, delta)" Type="void" Default="" Desc="Zoom at screen point" />
+        <ApiRow Name="ScreenToWorld(point)" Type="SKPointd" Default="" Desc="Convert screen → world" />
+        <ApiRow Name="WorldToScreen(point)" Type="SKPoint" Default="" Desc="Convert world → screen" />
+        <ApiRow Name="GetTransformMatrix()" Type="SKMatrix" Default="" Desc="Get rendering transform" />
+        <ApiRow Name="Reset()" Type="void" Default="" Desc="Reset to default" />
+    </ApiTable>
+
+    <h2 id="store">TLStore <a class="docs-anchor" href="#store">#</a></h2>
+
+    <ApiTable>
+        <ApiRow Name="Put(record)" Type="void" Default="" Desc="Insert or update record" />
+        <ApiRow Name="PutAll(records)" Type="void" Default="" Desc="Insert or update multiple" />
+        <ApiRow Name="Remove(id)" Type="bool" Default="" Desc="Remove record by ID" />
+        <ApiRow Name="Get(id)" Type="TLRecord?" Default="" Desc="Get record by ID" />
+        <ApiRow Name="Get<T>(id)" Type="T?" Default="" Desc="Get typed record by ID" />
+        <ApiRow Name="Has(id)" Type="bool" Default="" Desc="Check if record exists" />
+        <ApiRow Name="All()" Type="IReadOnlyList<TLRecord>" Default="" Desc="Get all records" />
+        <ApiRow Name="GetAllShapes()" Type="IReadOnlyList<TLShapeRecord>" Default="" Desc="Get all shapes" />
+        <ApiRow Name="GetPages()" Type="IReadOnlyList<TLPageRecord>" Default="" Desc="Get all pages" />
+        <ApiRow Name="GetSnapshot()" Type="TLStoreSnapshot" Default="" Desc="Create snapshot" />
+        <ApiRow Name="LoadSnapshot(s)" Type="void" Default="" Desc="Load from snapshot" />
+        <ApiRow Name="Clear()" Type="void" Default="" Desc="Clear all records" />
+    </ApiTable>
+
+    <h2 id="selection">SelectionManager <a class="docs-anchor" href="#selection">#</a></h2>
+
+    <ApiTable>
+        <ApiRow Name="SelectedIds" Type="IReadOnlyCollection<string>" Default="" Desc="Selected shape IDs" />
+        <ApiRow Name="Count" Type="int" Default="" Desc="Number of selected shapes" />
+        <ApiRow Name="Select(id)" Type="void" Default="" Desc="Add to selection" />
+        <ApiRow Name="Deselect(id)" Type="void" Default="" Desc="Remove from selection" />
+        <ApiRow Name="Toggle(id)" Type="void" Default="" Desc="Toggle selection" />
+        <ApiRow Name="ClearSelection()" Type="void" Default="" Desc="Deselect all" />
+        <ApiRow Name="SelectAll(ids)" Type="void" Default="" Desc="Select all given IDs" />
+        <ApiRow Name="IsSelected(id)" Type="bool" Default="" Desc="Check if selected" />
+        <ApiRow Name="GetSelectedShapes(store)" Type="List<TLShapeRecord>" Default="" Desc="Get selected shape records" />
+        <ApiRow Name="HitTestHandles(point, zoom, utils)" Type="HandleType" Default="" Desc="Test if point hits a handle" />
+    </ApiTable>
+
+    <h2 id="history">HistoryManager <a class="docs-anchor" href="#history">#</a></h2>
+
+    <ApiTable>
+        <ApiRow Name="CanUndo" Type="bool" Default="" Desc="Whether undo is available" />
+        <ApiRow Name="CanRedo" Type="bool" Default="" Desc="Whether redo is available" />
+        <ApiRow Name="MaxHistory" Type="int" Default="50" Desc="Max undo steps" />
+        <ApiRow Name="PushUndo(store)" Type="void" Default="" Desc="Capture snapshot" />
+        <ApiRow Name="Undo(store)" Type="bool" Default="" Desc="Undo and return success" />
+        <ApiRow Name="Redo(store)" Type="bool" Default="" Desc="Redo and return success" />
+        <ApiRow Name="Clear()" Type="void" Default="" Desc="Clear history" />
+    </ApiTable>
+</div>

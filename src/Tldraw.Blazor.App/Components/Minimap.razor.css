@@ -1,0 +1,26 @@
+.minimap-container {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    z-index: 50;
+    backdrop-filter: blur(8px);
+}
+
+.minimap-header {
+    font-size: 10px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.minimap-canvas {
+    width: 180px;
+    height: 120px;
+}

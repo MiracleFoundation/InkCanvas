@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Tldraw.Docs": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:56552;http://localhost:56553"
+    }
+  }
+}

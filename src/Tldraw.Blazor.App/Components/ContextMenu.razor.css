@@ -1,0 +1,54 @@
+.context-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+}
+
+.context-menu {
+    position: absolute;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    min-width: 220px;
+    padding: 4px;
+    font-size: 13px;
+    animation: ctx-in 0.12s ease-out;
+}
+
+@@keyframes ctx-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.ctx-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 6px 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 5px;
+    color: #333;
+    gap: 8px;
+    text-align: left;
+}
+
+.ctx-item:hover {
+    background: #f0f0f0;
+}
+
+.ctx-item span {
+    margin-left: auto;
+    color: #999;
+    font-size: 11px;
+}
+
+.ctx-separator {
+    height: 1px;
+    background: #e8e8e8;
+    margin: 4px 8px;
+}

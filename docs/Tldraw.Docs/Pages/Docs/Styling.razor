@@ -1,0 +1,38 @@
+@page "/docs/styling"
+
+<PageTitle>Styling - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Styling</h1>
+    <p class="docs-lead">Customize shape appearance using the Style Panel or API.</p>
+
+    <h2 id="style-panel">
+        Style Panel
+        <a class="docs-anchor" href="#style-panel">#</a>
+    </h2>
+    <p>Select a shape to see the Style Panel on the right. It provides controls for:</p>
+    <ul>
+        <li><strong>Stroke color</strong> — 8 color presets</li>
+        <li><strong>Fill color</strong> — 8 presets + "no fill"</li>
+        <li><strong>Stroke width</strong> — slider 0.5–10</li>
+        <li><strong>Opacity</strong> — slider 0%–100%</li>
+        <li><strong>Dash pattern</strong> — solid / dashed / dotted</li>
+        <li><strong>Border radius</strong> — slider 0–50 (geo shapes only)</li>
+        <li><strong>Font size</strong> — slider 8–72 (text/note shapes only)</li>
+    </ul>
+
+    <h2 id="api">
+        Style API
+        <a class="docs-anchor" href="#api">#</a>
+    </h2>
+    <CodeBlock Language="csharp" Code="@(@"var shape = editor.CreateShape(""geo"", 100, 100);
+
+// Style properties
+shape.Style.Color = ""#1565C0"";       // Stroke color (hex)
+shape.Style.Fill = ""#E3F2FD"";        // Fill color (hex or ""none"")
+shape.Style.StrokeWidth = 3;           // Stroke width
+shape.Style.Opacity = 0.8;             // Opacity (0.0–1.0)
+shape.Style.DashPattern = ""dashed"";   // ""solid"", ""dashed"", ""dotted""
+shape.Style.BorderRadius = 12;         // Corner radius
+shape.Style.FontSize = 24;             // Font size for text")" />
+</div>

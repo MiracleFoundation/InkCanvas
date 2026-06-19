@@ -1,0 +1,57 @@
+@using Tldraw.Blazor.Core.Editor
+@using Tldraw.Blazor.Core.Store
+
+<div class="pages-panel">
+    <div class="pages-header">
+        <span>Pages</span>
+        <button class="pages-add-btn" @onclick="AddPage" title="Add page">+</button>
+    </div>
+    @foreach (var page in _pages)
+    {
+        <div class="page-item @(page.Id == _currentPageId ? "active" : "")"
+             @onclick='() => SwitchPage(page.Id)'>
+            <span class="page-icon">📄</span>
+            <span class="page-name">@(page.Name)</span>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Editor Editor { get; set; } = null!;
+
+    private List<TLPageRecord> _pages = new();
+    private string _currentPageId = "page:default";
+
+    protected override void OnInitialized()
+    {
+        Editor.EnsureDefaultPage();
+        RefreshPages();
+        Editor.Store.Changed += _ => { RefreshPages(); InvokeAsync(StateHasChanged); };
+    }
+
+    private void RefreshPages()
+    {
+        _pages = Editor.Store.GetPages().ToList();
+    }
+
+    private void AddPage()
+    {
+        var id = $"page:{Guid.NewGuid().ToString("N")[..8]}";
+        var page = new TLPageRecord
+        {
+            Id = id,
+            Name = $"Page {_pages.Count + 1}",
+            Index = _pages.Count
+        };
+        Editor.Store.Put(page);
+        SwitchPage(id);
+    }
+
+    private void SwitchPage(string pageId)
+    {
+        _currentPageId = pageId;
+        // For now, all shapes are visible across pages
+        // A full implementation would filter by page
+        Editor.Invalidate();
+    }
+}

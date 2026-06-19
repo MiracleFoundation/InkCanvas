@@ -1,0 +1,61 @@
+@page "/docs/tools"
+
+<PageTitle>Tools - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Tools</h1>
+    <p class="docs-lead">All tools use hierarchical <code>StateNode</code> state machines with transitions.</p>
+
+    <h2 id="built-in">
+        Built-in Tools
+        <a class="docs-anchor" href="#built-in">#</a>
+    </h2>
+
+    <ApiTable>
+        <ApiRow Name="SelectTool" Type="StateNode" Default="V" Desc="Select, move, resize, rotate, rubber-band, arrow editing" />
+        <ApiRow Name="DrawTool" Type="StateNode" Default="D" Desc="Freehand drawing with smooth bezier curves" />
+        <ApiRow Name="GeoTool" Type="StateNode" Default="G" Desc="Create geometric shapes by drag" />
+        <ApiRow Name="HandTool" Type="StateNode" Default="H" Desc="Canvas panning" />
+        <ApiRow Name="TextTool" Type="StateNode" Default="T" Desc="Create and edit text shapes" />
+        <ApiRow Name="ArrowTool" Type="StateNode" Default="A" Desc="Create arrows with auto-binding" />
+        <ApiRow Name="EraserTool" Type="StateNode" Default="E" Desc="Delete shapes by click/drag" />
+    </ApiTable>
+
+    <div class="docs-note docs-note--tip">
+        <strong>💡 Space+Drag</strong>
+        Holding <kbd>Space</kbd> and dragging pans the canvas from <em>any</em> tool — no need to switch to Hand tool.
+    </div>
+
+    <h2 id="switching">
+        Switching Tools
+        <a class="docs-anchor" href="#switching">#</a>
+    </h2>
+
+    <CodeBlock Language="csharp" Code="@(@"// By ID
+editor.SetActiveTool(""draw"");
+editor.SetActiveTool(""geo"");
+editor.SetActiveTool(""select"");
+
+// Get tool reference
+var geoTool = editor.GetTool(""geo"") as GeoTool;
+if (geoTool != null)
+    geoTool.GeoType = ""star"";")" />
+
+    <h2 id="select-states">
+        SelectTool States
+        <a class="docs-anchor" href="#select-states">#</a>
+    </h2>
+
+    <CodeBlock Language="text" Code="SelectTool
+├── IdleState          — Waiting for interaction
+│   → PointingState    — Click on shape
+│   → BrushState       — Click on empty space
+│   → ArrowEditingState — Click on arrow endpoint
+├── PointingState      — Pointer down, waiting for drag threshold
+│   → DraggingState    — Move past 5px threshold
+├── DraggingState      — Moving selected shapes
+├── BrushState         — Rubber-band selection rectangle
+├── ResizingState      — Dragging resize handle
+├── RotatingState      — Dragging rotation handle
+└── ArrowEditingState  — Dragging arrow endpoint" />
+</div>

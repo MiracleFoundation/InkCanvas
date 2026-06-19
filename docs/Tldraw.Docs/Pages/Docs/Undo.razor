@@ -1,0 +1,51 @@
+@page "/docs/undo"
+
+<PageTitle>Undo / Redo - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Undo / Redo</h1>
+    <p class="docs-lead">Snapshot-based undo system with 50 steps maximum.</p>
+
+    <h2 id="shortcuts">
+        Shortcuts
+        <a class="docs-anchor" href="#shortcuts">#</a>
+    </h2>
+    <ApiTable>
+        <ApiRow Name="Ctrl+Z" Type="shortcut" Default="" Desc="Undo last action" />
+        <ApiRow Name="Ctrl+Y" Type="shortcut" Default="" Desc="Redo last undone action" />
+        <ApiRow Name="Ctrl+Shift+Z" Type="shortcut" Default="" Desc="Redo (alternative)" />
+    </ApiTable>
+
+    <h2 id="auto-capture">
+        Auto-Capture
+        <a class="docs-anchor" href="#auto-capture">#</a>
+    </h2>
+    <p>Undo snapshots are automatically captured before:</p>
+    <ul>
+        <li>Dragging (moving shapes)</li>
+        <li>Resizing</li>
+        <li>Rotating</li>
+        <li>Deleting shapes</li>
+        <li>Pasting</li>
+        <li>Style changes</li>
+        <li>Grouping/Ungrouping</li>
+    </ul>
+
+    <h2 id="api">
+        API
+        <a class="docs-anchor" href="#api">#</a>
+    </h2>
+    <CodeBlock Language="csharp" Code="@(@"// Manual capture (before custom operations)
+editor.PushUndo();
+
+// Undo/Redo
+editor.Undo();
+editor.Redo();
+
+// Check availability
+if (editor.History.CanUndo) { /* can undo */ }
+if (editor.History.CanRedo) { /* can redo */ }
+
+// Clear history
+editor.History.Clear();")" />
+</div>

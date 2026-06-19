@@ -1,0 +1,90 @@
+@page "/docs/shapes"
+
+<PageTitle>Shapes - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Shapes</h1>
+    <p class="docs-lead">8 built-in shape types, each with a <code>ShapeUtil</code> that handles rendering, bounds calculation, and hit-testing.</p>
+
+    <h2 id="types">
+        Shape Types
+        <a class="docs-anchor" href="#types">#</a>
+    </h2>
+
+    <ApiTable>
+        <ApiRow Name="geo" Type="GeoShapeUtil" Default="" Desc="Rectangle, ellipse, diamond, star, hexagon, triangle" />
+        <ApiRow Name="draw" Type="DrawShapeUtil" Default="" Desc="Freehand strokes with smooth bezier curves" />
+        <ApiRow Name="text" Type="TextShapeUtil" Default="" Desc="Multi-line text with alignment" />
+        <ApiRow Name="note" Type="NoteShapeUtil" Default="" Desc="Sticky note with shadow and fold corner" />
+        <ApiRow Name="frame" Type="FrameShapeUtil" Default="" Desc="Frame container with label" />
+        <ApiRow Name="line" Type="LineShapeUtil" Default="" Desc="Polyline (straight segments)" />
+        <ApiRow Name="arrow" Type="ArrowShapeUtil" Default="" Desc="Arrow with arrowhead and bindings" />
+        <ApiRow Name="image" Type="ImageShapeUtil" Default="" Desc="Image from data URI with bitmap cache" />
+    </ApiTable>
+
+    <h2 id="style">
+        Shape Style
+        <a class="docs-anchor" href="#style">#</a>
+    </h2>
+
+    <ApiTable>
+        <ApiRow Name="Color" Type="string" Default="#1e1e1e" Desc="Stroke color (hex)" />
+        <ApiRow Name="Fill" Type="string" Default="none" Desc="Fill color (hex or 'none')" />
+        <ApiRow Name="StrokeWidth" Type="double" Default="2.0" Desc="Stroke width in world units" />
+        <ApiRow Name="Opacity" Type="double" Default="1.0" Desc="Opacity 0.0–1.0" />
+        <ApiRow Name="DashPattern" Type="string" Default="solid" Desc="'solid', 'dashed', 'dotted'" />
+        <ApiRow Name="BorderRadius" Type="double" Default="0" Desc="Corner radius for rectangles" />
+        <ApiRow Name="FontSize" Type="double" Default="16" Desc="Font size for text shapes" />
+    </ApiTable>
+
+    <h2 id="creating">
+        Creating Shapes
+        <a class="docs-anchor" href="#creating">#</a>
+    </h2>
+
+    <CodeBlock Language="csharp" Code="@(@"// Simple creation
+editor.CreateShape(""geo"", 100, 100);
+
+// With customization
+var shape = editor.CreateShape(""geo"", 200, 200);
+shape.Width = 300;
+shape.Height = 200;
+shape.Style.Fill = ""#E3F2FD"";
+shape.Style.Color = ""#1565C0"";
+shape.Style.BorderRadius = 12;
+
+if (shape.Props is TLGeoProps geo)
+{
+    geo.GeoType = ""ellipse"";  // rectangle, ellipse, diamond, star, hexagon, triangle
+    geo.Text = ""Custom Shape"";
+}")" />
+
+    <h2 id="custom">
+        Geo Shape Variants
+        <a class="docs-anchor" href="#custom">#</a>
+    </h2>
+
+    <CodeBlock Language="csharp" Code="@(@"// Rectangle (default)
+var rect = editor.CreateShape(""geo"", 100, 100);
+(rect.Props as TLGeoProps)!.GeoType = ""rectangle"";
+
+// Ellipse
+var ellipse = editor.CreateShape(""geo"", 300, 100);
+(ellipse.Props as TLGeoProps)!.GeoType = ""ellipse"";
+
+// Diamond
+var diamond = editor.CreateShape(""geo"", 500, 100);
+(diamond.Props as TLGeoProps)!.GeoType = ""diamond"";
+
+// Star
+var star = editor.CreateShape(""geo"", 100, 300);
+(star.Props as TLGeoProps)!.GeoType = ""star"";
+
+// Hexagon
+var hex = editor.CreateShape(""geo"", 300, 300);
+(hex.Props as TLGeoProps)!.GeoType = ""hexagon"";
+
+// Triangle
+var tri = editor.CreateShape(""geo"", 500, 300);
+(tri.Props as TLGeoProps)!.GeoType = ""triangle"";")" />
+</div>

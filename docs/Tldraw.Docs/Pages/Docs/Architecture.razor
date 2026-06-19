@@ -1,0 +1,68 @@
+@page "/docs/architecture"
+
+<PageTitle>Architecture - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Architecture</h1>
+    <p class="docs-lead">Tldraw.Blazor is organized into three layers: Core engine, SkiaSharp rendering, and Blazor UI.</p>
+
+    <h2 id="layers">
+        Project Layers
+        <a class="docs-anchor" href="#layers">#</a>
+    </h2>
+
+    <CodeBlock Language="text" Code="Tldraw.Blazor.Core/           ← Pure C#, no UI dependencies
+├── Editor/
+│   ├── Camera.cs              ← Pan/Zoom/Transform
+│   ├── Editor.cs              ← Central engine
+│   ├── SelectionManager.cs    ← Selection + handles
+│   ├── HistoryManager.cs      ← Undo/redo
+│   └── ShapeCache.cs          ← Performance caching
+├── Shapes/                    ← 8 shape renderers
+├── Store/                     ← Reactive record store
+└── Tools/                     ← 8 tool implementations
+
+Tldraw.Blazor.Skia/           ← SkiaSharp Blazor component
+└── TldrawCanvas.razor         ← Canvas with touch support
+
+Tldraw.Blazor.App/            ← Demo app
+├── Components/                ← UI panels
+└── Pages/Home.razor           ← Full demo" />
+
+    <h2 id="data-flow">
+        Data Flow
+        <a class="docs-anchor" href="#data-flow">#</a>
+    </h2>
+
+    <CodeBlock Language="text" Code="User Input → TldrawCanvas → Editor → ActiveTool → StateNode
+                                                      ↓
+                                               Store.Put/Remove
+                                                      ↓
+                                               Store.Changed event
+                                                      ↓
+                                               Editor.Invalidate()
+                                                      ↓
+                                               Render() → SKCanvas" />
+
+    <h2 id="state-machine">
+        Tool State Machine
+        <a class="docs-anchor" href="#state-machine">#</a>
+    </h2>
+    <p>All tools use hierarchical <code>StateNode</code> state machines with transitions.</p>
+
+    <CodeBlock Language="text" Code="SelectTool
+├── IdleState
+│   └── OnPointerDown → PointingState | BrushState | ArrowEditingState
+├── PointingState
+│   └── OnPointerMove (threshold) → DraggingState
+├── DraggingState
+│   └── OnPointerUp → IdleState
+├── BrushState
+│   └── OnPointerUp → IdleState
+├── ResizingState
+│   └── OnPointerUp → IdleState
+├── RotatingState
+│   └── OnPointerUp → IdleState
+└── ArrowEditingState
+    └── OnPointerUp → IdleState" />
+</div>

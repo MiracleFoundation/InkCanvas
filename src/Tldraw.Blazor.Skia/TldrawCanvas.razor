@@ -1,0 +1,19 @@
+@using SkiaSharp.Views.Blazor
+
+<div class="tldraw-canvas-container"
+     tabindex="0"
+     @onpointerdown="OnPointerDown"
+     @ondblclick="OnDoubleClick"
+     @onpointermove="OnPointerMove"
+     @onpointerup="OnPointerUp"
+     @onpointerleave="OnPointerUp"
+     @onwheel="OnWheel"
+     @onkeydown="OnKeyDown"
+     @onkeyup="OnKeyUp"
+     style="width: 100%; height: 100%; touch-action: none; overflow: hidden; outline: none; cursor: @CursorStyle;">
+
+    <SKCanvasView OnPaintSurface="OnPaintSurface"
+                  IgnorePixelScaling="false"
+                  @ref="_canvasView"
+                  style="width: 100%; height: 100%;" />
+</div>

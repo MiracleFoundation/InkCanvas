@@ -1,0 +1,29 @@
+@page "/docs/persistence"
+
+<PageTitle>Persistence - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Persistence</h1>
+    <p class="docs-lead">Auto-save to LocalStorage and manual export/import.</p>
+
+    <h2 id="auto-save">
+        Auto-Save
+        <a class="docs-anchor" href="#auto-save">#</a>
+    </h2>
+    <ul>
+        <li><strong>Auto-save:</strong> Every 5 seconds to <code>localStorage</code></li>
+        <li><strong>Auto-load:</strong> On page startup, restores from <code>localStorage</code></li>
+        <li>Key: <code>tldraw-blazor-data</code></li>
+    </ul>
+
+    <h2 id="manual">
+        Manual Save/Load
+        <a class="docs-anchor" href="#manual">#</a>
+    </h2>
+    <CodeBlock Language="csharp" Code="@(@"// Save to JSON
+var json = editor.Store.GetSnapshot().ToJson();
+
+// Load from JSON
+var snapshot = TLStoreSnapshot.FromJson(json);
+editor.Store.LoadSnapshot(snapshot);")" />
+</div>

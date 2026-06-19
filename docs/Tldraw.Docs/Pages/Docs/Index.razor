@@ -1,0 +1,59 @@
+@page "/docs"
+
+<PageTitle>Getting Started - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Getting Started</h1>
+    <p class="docs-lead">
+        Tldraw.Blazor is an infinite canvas whiteboard SDK for Blazor, ported from tldraw — powered by SkiaSharp.
+        Pure C# engine with minimal JS interop.
+    </p>
+
+    <div class="docs-features">
+        <div class="docs-feature">🎨 8 shape types</div>
+        <div class="docs-feature">🛠️ 8 tools</div>
+        <div class="docs-feature">🔗 Arrow bindings</div>
+        <div class="docs-feature">↩️ Undo/Redo</div>
+        <div class="docs-feature">📋 Clipboard</div>
+        <div class="docs-feature">📱 Touch support</div>
+        <div class="docs-feature">🌙 Dark mode</div>
+        <div class="docs-feature">💾 Auto-save</div>
+    </div>
+
+    <h2 id="install">
+        Installation
+        <a class="docs-anchor" href="#install">#</a>
+    </h2>
+
+    <h3>Prerequisites</h3>
+    <ul>
+        <li>.NET 10 SDK</li>
+        <li>Visual Studio 2022 or VS Code with C# extension</li>
+    </ul>
+
+    <h3>Clone & Build</h3>
+    <CodeBlock Language="bash" Code="git clone https://github.com/your-repo/Tldraw.Blazor.git
+cd Tldraw.Blazor
+dotnet build" />
+
+    <h3>Run</h3>
+    <CodeBlock Language="bash" Code="dotnet run --project src/Tldraw.Blazor.App --urls http://localhost:5000" />
+
+    <p>Open <code>http://localhost:5000</code> in your browser.</p>
+
+    <div class="docs-note docs-note--info">
+        <strong>💡 Full demo app</strong>
+        See <code>src/Tldraw.Blazor.App/Pages/Home.razor</code> for a complete example with toolbar, style panel, context menu, and all features.
+    </div>
+
+    <h2 id="next-steps">
+        Next Steps
+        <a class="docs-anchor" href="#next-steps">#</a>
+    </h2>
+    <ul>
+        <li><a href="docs/quick-start">Quick Start</a> - Use as a component in your app</li>
+        <li><a href="docs/architecture">Architecture</a> - Understand the project structure</li>
+        <li><a href="docs/api">API Reference</a> - Full class and method reference</li>
+        <li><a href="docs/shortcuts">Keyboard Shortcuts</a> - All available shortcuts</li>
+    </ul>
+</div>

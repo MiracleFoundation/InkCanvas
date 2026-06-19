@@ -1,0 +1,14 @@
+<button class="dark-mode-btn" @onclick="Toggle" title="Toggle dark mode">
+    @(IsDark ? "☀️" : "🌙")
+</button>
+
+@code {
+    [Parameter] public bool IsDark { get; set; }
+    [Parameter] public EventCallback<bool> IsDarkChanged { get; set; }
+
+    private async Task Toggle()
+    {
+        IsDark = !IsDark;
+        await IsDarkChanged.InvokeAsync(IsDark);
+    }
+}

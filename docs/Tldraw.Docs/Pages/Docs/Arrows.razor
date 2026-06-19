@@ -1,0 +1,63 @@
+@page "/docs/arrows"
+
+<PageTitle>Arrow System - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Arrow System</h1>
+    <p class="docs-lead">Create arrows with auto-binding endpoints that snap to shapes and follow them when moved.</p>
+
+    <h2 id="creating">
+        Creating Arrows
+        <a class="docs-anchor" href="#creating">#</a>
+    </h2>
+    <ol>
+        <li>Press <kbd>A</kbd> to activate Arrow tool</li>
+        <li>Drag from start point to end point</li>
+        <li>If endpoints are near shapes, they auto-bind (green dot)</li>
+        <li>Release to create the arrow</li>
+    </ol>
+
+    <h2 id="bindings">
+        Bindings
+        <a class="docs-anchor" href="#bindings">#</a>
+    </h2>
+    <ul>
+        <li><strong>Green dot</strong> — endpoint is bound to a shape</li>
+        <li><strong>Blue dot</strong> — endpoint is unbound</li>
+        <li>When a bound shape moves, the arrow endpoint follows automatically</li>
+        <li>Bindings are stored as <code>TLBindingRecord</code> in the store</li>
+    </ul>
+
+    <h2 id="editing">
+        Editing Endpoints
+        <a class="docs-anchor" href="#editing">#</a>
+    </h2>
+    <ol>
+        <li>Switch to Select tool (<kbd>V</kbd>)</li>
+        <li>Click on an arrow endpoint dot</li>
+        <li>Drag to move the endpoint</li>
+        <li>Release near a shape to rebind</li>
+        <li>Press <kbd>Escape</kbd> to cancel</li>
+    </ol>
+
+    <h2 id="api">
+        Arrow API
+        <a class="docs-anchor" href="#api">#</a>
+    </h2>
+
+    <CodeBlock Language="csharp" Code="@(@"// Create arrow
+var arrow = editor.CreateShape(""arrow"", 100, 100);
+
+// Try binding endpoint
+editor.TryBindArrowEndpoint(arrow.Id, ""start"", 150, 150);
+editor.TryBindArrowEndpoint(arrow.Id, ""end"", 400, 300);
+
+// Get binding
+var binding = editor.GetArrowBinding(arrow.Id, ""start"");
+
+// Remove binding
+editor.UnbindArrowEndpoint(arrow.Id, ""start"");
+
+// Update all bindings (call after moving shapes)
+editor.UpdateAllArrowBindings();")" />
+</div>

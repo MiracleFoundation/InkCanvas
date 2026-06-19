@@ -1,0 +1,83 @@
+@page "/docs/editor"
+
+<PageTitle>Editor - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Editor</h1>
+    <p class="docs-lead">The <code>Editor</code> class is the central engine. It owns the store, camera, tools, selection, and history.</p>
+
+    <h2 id="properties">
+        Key Properties
+        <a class="docs-anchor" href="#properties">#</a>
+    </h2>
+
+    <ApiTable>
+        <ApiRow Name="Camera" Type="Camera" Default="" Desc="Viewport camera (pan/zoom)" />
+        <ApiRow Name="Store" Type="TLStore" Default="" Desc="Reactive record store" />
+        <ApiRow Name="ShapeUtils" Type="ShapeUtilRegistry" Default="" Desc="Shape type → util mapping" />
+        <ApiRow Name="Selection" Type="SelectionManager" Default="" Desc="Selection tracking" />
+        <ApiRow Name="History" Type="HistoryManager" Default="" Desc="Undo/redo stack" />
+        <ApiRow Name="ActiveTool" Type="StateNode" Default="" Desc="Currently active tool" />
+        <ApiRow Name="ShapeCache" Type="ShapeCache" Default="" Desc="Shape rendering cache" />
+    </ApiTable>
+
+    <h2 id="methods">
+        Key Methods
+        <a class="docs-anchor" href="#methods">#</a>
+    </h2>
+
+    <CodeBlock Language="csharp" Code="@(@"var editor = new Editor();
+
+// Shape creation
+editor.CreateShape(""geo"", 100, 100);
+
+// Tool switching
+editor.SetActiveTool(""draw"");
+var tool = editor.GetTool(""select"");
+
+// Undo/Redo
+editor.PushUndo();  // Capture before changes
+editor.Undo();
+editor.Redo();
+
+// Clipboard
+editor.Copy();
+editor.Paste();
+editor.Cut();
+
+// Layout
+editor.Align(Editor.AlignType.Center);
+editor.Distribute(Editor.DistributeType.Horizontal);
+editor.BringToFront();
+editor.SendToBack();
+editor.GroupSelected();
+editor.UngroupSelected();
+
+// Export
+var pngBytes = editor.ExportToPng();
+var svgString = editor.ExportToSvg();
+
+// Rendering
+editor.Render(canvas, imageInfo);
+editor.Invalidate();  // Trigger re-render")" />
+
+    <h2 id="creating">
+        Creating an Editor
+        <a class="docs-anchor" href="#creating">#</a>
+    </h2>
+
+    <CodeBlock Language="csharp" Code="@(@"// In your Blazor component
+@code {
+    private Editor _editor = new();
+
+    protected override void OnInitialized()
+    {
+        // Subscribe to changes
+        _editor.StateChanged += () => InvokeAsync(StateHasChanged);
+
+        // Create initial shapes
+        _editor.CreateShape(""frame"", 50, 50);
+        _editor.CreateShape(""geo"", 100, 100);
+    }
+}")" />
+</div>

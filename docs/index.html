@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tldraw.Blazor — Documentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/docs.css" />
+</head>
+<body>
+    <div class="docs-layout">
+        <!-- Sidebar -->
+        <aside class="docs-sidebar" id="sidebar">
+            <div class="docs-sidebar__header">
+                <a href="#" class="docs-sidebar__logo">
+                    <span class="docs-sidebar__logo-icon">🎨</span>
+                    <span class="docs-sidebar__logo-text">Tldraw.Blazor</span>
+                </a>
+                <span class="docs-sidebar__version">v1.0</span>
+            </div>
+
+            <nav class="docs-sidebar__nav">
+                <div class="docs-sidebar__group">
+                    <div class="docs-sidebar__group-title">Getting Started</div>
+                    <a class="docs-sidebar__link active" href="#intro">Introduction</a>
+                    <a class="docs-sidebar__link" href="#install">Installation</a>
+                    <a class="docs-sidebar__link" href="#quick-start">Quick Start</a>
+                    <a class="docs-sidebar__link" href="#architecture">Architecture</a>
+                </div>
+
+                <div class="docs-sidebar__group">
+                    <div class="docs-sidebar__group-title">Core Concepts</div>
+                    <a class="docs-sidebar__link" href="#editor">Editor</a>
+                    <a class="docs-sidebar__link" href="#store">Store & Records</a>
+                    <a class="docs-sidebar__link" href="#shapes">Shapes</a>
+                    <a class="docs-sidebar__link" href="#tools">Tools</a>
+                    <a class="docs-sidebar__link" href="#camera">Camera</a>
+                </div>
+
+                <div class="docs-sidebar__group">
+                    <div class="docs-sidebar__group-title">Features</div>
+                    <a class="docs-sidebar__link" href="#selection">Selection & Transform</a>
+                    <a class="docs-sidebar__link" href="#arrows">Arrow System</a>
+                    <a class="docs-sidebar__link" href="#undo">Undo / Redo</a>
+                    <a class="docs-sidebar__link" href="#clipboard">Clipboard</a>
+                    <a class="docs-sidebar__link" href="#layout">Layout & Composition</a>
+                    <a class="docs-sidebar__link" href="#styles">Styling</a>
+                </div>
+
+                <div class="docs-sidebar__group">
+                    <div class="docs-sidebar__group-title">UI Components</div>
+                    <a class="docs-sidebar__link" href="#toolbar">Toolbar</a>
+                    <a class="docs-sidebar__link" href="#style-panel">Style Panel</a>
+                    <a class="docs-sidebar__link" href="#context-menu">Context Menu</a>
+                    <a class="docs-sidebar__link" href="#minimap">Minimap</a>
+                    <a class="docs-sidebar__link" href="#dark-mode">Dark Mode</a>
+                </div>
+
+                <div class="docs-sidebar__group">
+                    <div class="docs-sidebar__group-title">Data</div>
+                    <a class="docs-sidebar__link" href="#persistence">Persistence</a>
+                    <a class="docs-sidebar__link" href="#export">Export / Import</a>
+                    <a class="docs-sidebar__link" href="#images">Image Loading</a>
+                </div>
+
+                <div class="docs-sidebar__group">
+                    <div class="docs-sidebar__group-title">Reference</div>
+                    <a class="docs-sidebar__link" href="#shortcuts">Keyboard Shortcuts</a>
+                    <a class="docs-sidebar__link" href="#api">API Reference</a>
+                </div>
+            </nav>
+
+            <div class="docs-sidebar__footer">
+                <a href="https://github.com/your-repo/Tldraw.Blazor" target="_blank">GitHub</a>
+                <span>&bull;</span>
+                <span>MIT License</span>
+                <button class="docs-theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+            </div>
+        </aside>
+
+        <!-- Mobile sidebar toggle -->
+        <button class="docs-sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">
+            <span></span><span></span><span></span>
+        </button>
+
+        <!-- Main content -->
+        <main class="docs-main">
+            <div class="docs-content">
+
+                <!-- Introduction -->
+                <section id="intro">
+                    <h1>Tldraw.Blazor <span class="docs-badge">v1.0</span></h1>
+                    <p class="docs-lead">
+                        Infinite canvas whiteboard SDK for Blazor, ported from <a href="https://tldraw.dev" target="_blank">tldraw</a> — powered by SkiaSharp. Pure C# with minimal JS interop.
+                    </p>
+                    <div class="docs-features">
+                        <div class="docs-feature">🎨 8 shape types</div>
+                        <div class="docs-feature">🛠️ 8 tools</div>
+                        <div class="docs-feature">🔗 Arrow bindings</div>
+                        <div class="docs-feature">↩️ Undo/Redo</div>
+                        <div class="docs-feature">📋 Clipboard</div>
+                        <div class="docs-feature">📱 Touch support</div>
+                        <div class="docs-feature">🌙 Dark mode</div>
+                        <div class="docs-feature">💾 Auto-save</div>
+                    </div>
+                </section>
+
+                <!-- Installation -->
+                <section id="install">
+                    <h2>Installation <a class="docs-anchor" href="#install">#</a></h2>
+
+                    <h3>Prerequisites</h3>
+                    <ul>
+                        <li>.NET 10 SDK</li>
+                        <li>Visual Studio 2022 or VS Code with C# extension</li>
+                    </ul>
+
+                    <h3>Clone & Build</h3>
+                    <div class="docs-code-block">
+                        <div class="docs-code-header">
+                            <span>bash</span>
+                            <button class="docs-copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>git clone https://github.com/your-repo/Tldraw.Blazor.git
+cd Tldraw.Blazor
+dotnet build</code></pre>
+                    </div>
+
+                    <h3>Run</h3>
+                    <div class="docs-code-block">
+                        <div class="docs-code-header">
+                            <span>bash</span>
+                            <button class="docs-copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>dotnet run --project src/Tldraw.Blazor.App --urls "http://localhost:5000"</code></pre>
+                    </div>
+                    <p>Open <code>http://localhost:5000</code> in your browser.</p>
+                </section>
+
+                <!-- Quick Start -->
+                <section id="quick-start">
+                    <h2>Quick Start <a class="docs-anchor" href="#quick-start">#</a></h2>
+
+                    <h3>Use as a Component</h3>
+                    <div class="docs-code-block">
+                        <div class="docs-code-header">
+                            <span>razor</span>
+                            <button class="docs-copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code>@using Tldraw.Blazor.Skia
+@using Tldraw.Blazor.Core.Editor
+@using Tldraw.Blazor.Core.Store
+
+&lt;TldrawCanvas Editor="_editor" /&gt;
+
+@code {
+    private Editor _editor = new();
+
+    protected override void OnInitialized()
+    {
+        // Create shapes programmatically
+        _editor.CreateShape("geo", 100, 100);
+        var rect = _editor.Store.GetAllShapes().Last();
+        rect.Width = 200;
+        rect.Height = 120;
+        rect.Style.Fill = "#E3F2FD";
+        rect.Style.Color = "#1565C0";
+        rect.Style.BorderRadius = 8;
+        if (rect.Props is TLGeoProps props)
+        {
+            props.GeoType = "rectangle";
+            props.Text = "Hello!";
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="docs-note docs-note--info">
+                        <strong>💡 Full demo app</strong>
+                        See <code>src/Tldraw.Blazor.App/Pages/Home.razor</code> for a complete example with toolbar, style panel, context menu, and all features.
+                    </div>
+                </section>
+
+                <!-- Architecture -->
+                <section id="architecture">
+                    <h2>Architecture <a class="docs-anchor" href="#architecture">#</a></h2>
+                    <div class="docs-code-block">
+                        <div class="docs-code-header"><span>text</span></div>
+                        <pre><code>Tldraw.Blazor.Core/           ← Pure C#, no UI dependencies
+├── Editor/
+│   ├── Camera.cs              ← Pan/Zoom/Transform
+│   ├── Editor.cs              ← Central engine
+│   ├── SelectionManager.cs    ← Selection + handles
+│   ├── HistoryManager.cs      ← Undo/redo
+│   └── ShapeCache.cs          ← Performance caching
+├── Shapes/                    ← 8 shape renderers
+├── Store/                     ← Reactive record store
+└── Tools/                     ← 8 tool implementations
+
+Tldraw.Blazor.Skia/           ← SkiaSharp Blazor component
+└── TldrawCanvas.razor         ← Canvas with touch support
+
+Tldraw.Blazor.App/            ← Demo app
+├── Components/                ← UI panels
+└── Pages/Home.razor           ← Full demo</code></pre>
+                    </div>
+                </section>
+
+                <!-- Editor -->
+                <section id="editor">
+                    <h2>Editor <a class="docs-anchor" href="#editor">#</a></h2>
+                    <p>The <code>Editor</code> class is the central engine. It owns the store, camera, tools, selection, and history.</p>
+
+                    <div class="docs-code-block">
+                        <div class="docs-code-header"><span>csharp</span><button class="docs-copy-btn" onclick="copyCode(this)">Copy</button></div>
+                        <pre><code>var editor = new Editor();
+
+// Create shapes
+editor.CreateShape("geo", 100, 100);
+
+// Switch tools
+editor.SetActiveTool("draw");
+
+// Undo/Redo
+editor.Undo();
+editor.Redo();
+
+// Clipboard
+editor.Copy();
+editor.Paste();</code></pre>
+                    </div>
+
+                    <h3>Key Properties</h3>
+                    <table class="docs-table">
+                        <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>Camera</code></td><td><code>Camera</code></td><td>Viewport camera (pan/zoom)</td></tr>
+                            <tr><td><code>Store</code></td><td><code>TLStore</code></td><td>Reactive record store</td></tr>
+                            <tr><td><code>ShapeUtils</code></td><td><code>ShapeUtilRegistry</code></td><td>Shape type → util mapping</td></tr>
+                            <tr><td><code>Selection</code></td><td><code>SelectionManager</code></td><td>Selection tracking</td></tr>
+                            <tr><td><code>History</code></td><td><code>HistoryManager</code></td><td>Undo/redo stack</td></tr>
+                            <tr><td><code>ActiveTool</code></td><td><code>StateNode</code></td><td>Currently active tool</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Store -->
+                <section id="store">
+                    <h2>Store & Records <a class="docs-anchor" href="#store">#</a></h2>
+                    <p>The <code>TLStore</code> is a reactive record store. All shapes, pages, bindings, and assets are <code>TLRecord</code> subclasses.</p>
+
+                    <div class="docs-code-block">
+                        <div class="docs-code-header"><span>csharp</span><button class="docs-copy-btn" onclick="copyCode(this)">Copy</button></div>
+                        <pre><code>// Get all shapes
+var shapes = editor.Store.GetAllShapes();
+
+// Listen for changes
+editor.Store.Changed += changes => {
+    foreach (var change in changes)
+        Console.WriteLine($"{change.Type}: {change.RecordId}");
+};
+
+// Snapshot (for undo/save)
+var snapshot = editor.Store.GetSnapshot();
+editor.Store.LoadSnapshot(snapshot);</code></pre>
+                    </div>
+
+                    <h3>Record Types</h3>
+                    <table class="docs-table">
+                        <thead><tr><th>Type</th><th>Discriminator</th><th>Purpose</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>TLShapeRecord</code></td><td><code>"shape"</code></td><td>Shape on canvas</td></tr>
+                            <tr><td><code>TLPageRecord</code></td><td><code>"page"</code></td><td>Document page</td></tr>
+                            <tr><td><code>TLBindingRecord</code></td><td><code>"binding"</code></td><td>Arrow-to-shape binding</td></tr>
+                            <tr><td><code>TLAssetRecord</code></td><td><code>"asset"</code></td><td>Image/video asset</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Shapes -->
+                <section id="shapes">
+                    <h2>Shapes <a class="docs-anchor" href="#shapes">#</a></h2>
+                    <p>8 built-in shape types, each with a <code>ShapeUtil</code> that handles rendering, bounds, and hit-testing.</p>
+
+                    <table class="docs-table">
+                        <thead><tr><th>Shape Type</th><th>Util Class</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>"geo"</code></td><td><code>GeoShapeUtil</code></td><td>Rectangle, ellipse, diamond, star, hexagon, triangle</td></tr>
+                            <tr><td><code>"draw"</code></td><td><code>DrawShapeUtil</code></td><td>Freehand strokes with smooth bezier curves</td></tr>
+                            <tr><td><code>"text"</code></td><td><code>TextShapeUtil</code></td><td>Multi-line text with alignment</td></tr>
+                            <tr><td><code>"note"</code></td><td><code>NoteShapeUtil</code></td><td>Sticky note with shadow and fold corner</td></tr>
+                            <tr><td><code>"frame"</code></td><td><code>FrameShapeUtil</code></td><td>Frame container with label</td></tr>
+                            <tr><td><code>"line"</code></td><td><code>LineShapeUtil</code></td><td>Polyline (straight segments)</td></tr>
+                            <tr><td><code>"arrow"</code></td><td><code>ArrowShapeUtil</code></td><td>Arrow with arrowhead and bindings</td></tr>
+                            <tr><td><code>"image"</code></td><td><code>ImageShapeUtil</code></td><td>Image from data URI with bitmap cache</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Creating Shapes</h3>
+                    <div class="docs-code-block">
+                        <div class="docs-code-header"><span>csharp</span><button class="docs-copy-btn" onclick="copyCode(this)">Copy</button></div>
+                        <pre><code>// Simple creation
+editor.CreateShape("geo", 100, 100);
+
+// With custom properties
+var shape = editor.CreateShape("geo", 200, 200);
+shape.Width = 300;
+shape.Height = 200;
+shape.Style.Fill = "#E3F2FD";
+shape.Style.Color = "#1565C0";
+shape.Style.BorderRadius = 12;
+if (shape.Props is TLGeoProps geo)
+{
+    geo.GeoType = "ellipse";
+    geo.Text = "Custom Shape";
+}</code></pre>
+                    </div>
+
+                    <h3>Shape Style</h3>
+                    <table class="docs-table">
+                        <thead><tr><th>Property</th><th>Type</th><th>Default</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>Color</code></td><td>string (hex)</td><td><code>"#1e1e1e"</code></td></tr>
+                            <tr><td><code>Fill</code></td><td>string (hex or "none")</td><td><code>"none"</code></td></tr>
+                            <tr><td><code>StrokeWidth</code></td><td>double</td><td><code>2.0</code></td></tr>
+                            <tr><td><code>Opacity</code></td><td>double (0–1)</td><td><code>1.0</code></td></tr>
+                            <tr><td><code>DashPattern</code></td><td>string</td><td><code>"solid"</code></td></tr>
+                            <tr><td><code>BorderRadius</code></td><td>double</td><td><code>0</code></td></tr>
+                            <tr><td><code>FontSize</code></td><td>double</td><td><code>16</code></td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Tools -->
+                <section id="tools">
+                    <h2>Tools <a class="docs-anchor" href="#tools">#</a></h2>
+                    <p>All tools use hierarchical <code>StateNode</code> state machines with transitions.</p>
+
+                    <table class="docs-table">
+                        <thead><tr><th>Tool</th><th>Key</th><th>States</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>SelectTool</code></td><td>V</td><td>Idle → Pointing → Dragging / Brush / Resizing / Rotating / ArrowEditing</td><td>Select, move, resize, rotate shapes</td></tr>
+                            <tr><td><code>DrawTool</code></td><td>D</td><td>Idle → Drawing</td><td>Freehand drawing</td></tr>
+                            <tr><td><code>GeoTool</code></td><td>G</td><td>Idle → Creating</td><td>Create geometric shapes by drag</td></tr>
+                            <tr><td><code>HandTool</code></td><td>H</td><td>Idle → Panning</td><td>Canvas panning</td></tr>
+                            <tr><td><code>TextTool</code></td><td>T</td><td>Idle → Editing</td><td>Create and edit text</td></tr>
+                            <tr><td><code>ArrowTool</code></td><td>A</td><td>Idle → Drawing</td><td>Create arrows with bindings</td></tr>
+                            <tr><td><code>EraserTool</code></td><td>E</td><td>Idle → Erasing</td><td>Delete shapes</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="docs-note docs-note--tip">
+                        <strong>💡 Space+Drag</strong>
+                        Holding <kbd>Space</kbd> and dragging pans the canvas from <em>any</em> tool — no need to switch to Hand tool.
+                    </div>
+                </section>
+
+                <!-- Camera -->
+                <section id="camera">
+                    <h2>Camera <a class="docs-anchor" href="#camera">#</a></h2>
+                    <p>The <code>Camera</code> manages viewport position and zoom level.</p>
+
+                    <div class="docs-code-block">
+                        <div class="docs-code-header"><span>csharp</span><button class="docs-copy-btn" onclick="copyCode(this)">Copy</button></div>
+                        <pre><code>// Pan
+editor.Camera.Pan(dx, dy);
+
+// Zoom at screen point
+editor.Camera.ZoomAt(screenPoint, delta);
+
+// Coordinate conversion
+var world = editor.Camera.ScreenToWorld(screenX, screenY);
+var screen = editor.Camera.WorldToScreen(worldX, worldY);
+
+// Reset
+editor.Camera.Reset();</code></pre>
+                    </div>
+                </section>
+
+                <!-- Selection -->
+                <section id="selection">
+                    <h2>Selection & Transform <a class="docs-anchor" href="#selection">#</a></h2>
+
+                    <h3>Selecting</h3>
+                    <ul>
+                        <li><strong>Click</strong> — select single shape</li>
+                        <li><strong>Shift+Click</strong> — toggle shape in selection</li>
+                        <li><strong>Drag on empty</strong> — rubber-band selection</li>
+                        <li><strong>Ctrl+A</strong> — select all</li>
+                    </ul>
+
+                    <h3>Resizing</h3>
+                    <ul>
+                        <li>Drag any of <strong>8 handles</strong> (corners + edge midpoints)</li>
+                        <li><strong>Shift</strong> — constrain proportions (corners only)</li>
+                        <li><strong>Alt</strong> — resize from center</li>
+                        <li><strong>Escape</strong> — cancel, restore original bounds</li>
+                    </ul>
+
+                    <h3>Rotating</h3>
+                    <ul>
+                        <li>Drag the <strong>rotation handle</strong> (circle above top-center)</li>
+                        <li><strong>Shift</strong> — snap to 15° increments</li>
+                    </ul>
+
+                    <h3>Moving</h3>
+                    <ul>
+                        <li>Drag selected shapes to move</li>
+                        <li>All selected shapes move together</li>
+                        <li>Arrow bindings auto-update when bound shapes move</li>
+                    </ul>
+                </section>
+
+                <!-- Arrows -->
+                <section id="arrows">
+                    <h2>Arrow System <a class="docs-anchor" href="#arrows">#</a></h2>
+
+                    <h3>Creating Arrows</h3>
+                    <p>Press <kbd>A</kbd> and drag from one point to another. If endpoints are near shapes, they auto-bind.</p>
+
+                    <h3>Bindings</h3>
+                    <ul>
+                        <li><strong>Green dot</strong> — endpoint is bound to a shape</li>
+                        <li><strong>Blue dot</strong> — endpoint is unbound</li>
+                        <li>When a bound shape moves, the arrow endpoint follows</li>
+                    </ul>
+
+                    <h3>Editing Endpoints</h3>
+                    <ol>
+                        <li>Switch to Select tool (<kbd>V</kbd>)</li>
+                        <li>Click on an arrow endpoint dot</li>
+                        <li>Drag to move the endpoint</li>
+                        <li>Release near a shape to rebind</li>
+                        <li>Press <kbd>Escape</kbd> to cancel</li>
+                    </ol>
+                </section>
+
+                <!-- Undo/Redo -->
+                <section id="undo">
+                    <h2>Undo / Redo <a class="docs-anchor" href="#undo">#</a></h2>
+                    <p>Snapshot-based undo system with 50 steps maximum.</p>
+                    <table class="docs-table">
+                        <thead><tr><th>Action</th><th>Shortcut</th></tr></thead>
+                        <tbody>
+                            <tr><td>Undo</td><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td></tr>
+                            <tr><td>Redo</td><td><kbd>Ctrl</kbd>+<kbd>Y</kbd> or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd></td></tr>
+                        </tbody>
+                    </table>
+                    <p>Auto-captures before: drag, resize, rotate, delete, paste.</p>
+                </section>
+
+                <!-- Clipboard -->
+                <section id="clipboard">
+                    <h2>Clipboard <a class="docs-anchor" href="#clipboard">#</a></h2>
+                    <table class="docs-table">
+                        <thead><tr><th>Action</th><th>Shortcut</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td>Copy</td><td><kbd>Ctrl</kbd>+<kbd>C</kbd></td><td>Serialize selected shapes to JSON</td></tr>
+                            <tr><td>Paste</td><td><kbd>Ctrl</kbd>+<kbd>V</kbd></td><td>Paste with new IDs, offset +20px</td></tr>
+                            <tr><td>Cut</td><td><kbd>Ctrl</kbd>+<kbd>X</kbd></td><td>Copy + delete selected</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Layout -->
+                <section id="layout">
+                    <h2>Layout & Composition <a class="docs-anchor" href="#layout">#</a></h2>
+
+                    <h3>Alignment (via Context Menu)</h3>
+                    <p>Select 2+ shapes, right-click → Alignment → choose direction.</p>
+
+                    <h3>Distribution</h3>
+                    <p>Select 3+ shapes, right-click → Distribute Horizontal/Vertical.</p>
+
+                    <h3>Z-Ordering</h3>
+                    <table class="docs-table">
+                        <thead><tr><th>Action</th><th>Context Menu</th></tr></thead>
+                        <tbody>
+                            <tr><td>Bring to Front</td><td>Right-click → Bring to Front</td></tr>
+                            <tr><td>Send to Back</td><td>Right-click → Send to Back</td></tr>
+                            <tr><td>Bring Forward</td><td>Right-click → Bring Forward</td></tr>
+                            <tr><td>Send Backward</td><td>Right-click → Send Backward</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Grouping</h3>
+                    <table class="docs-table">
+                        <thead><tr><th>Action</th><th>Shortcut</th></tr></thead>
+                        <tbody>
+                            <tr><td>Group</td><td><kbd>Ctrl</kbd>+<kbd>G</kbd></td></tr>
+                            <tr><td>Ungroup</td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd></td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Styles -->
+                <section id="styles">
+                    <h2>Styling <a class="docs-anchor" href="#styles">#</a></h2>
+                    <p>Select a shape to see the Style Panel on the right. Change:</p>
+                    <ul>
+                        <li><strong>Stroke color</strong> — 8 color presets</li>
+                        <li><strong>Fill color</strong> — 8 presets + "no fill"</li>
+                        <li><strong>Stroke width</strong> — slider 0.5–10</li>
+                        <li><strong>Opacity</strong> — slider 0%–100%</li>
+                        <li><strong>Dash pattern</strong> — solid / dashed / dotted</li>
+                        <li><strong>Border radius</strong> — slider 0–50 (geo shapes)</li>
+                        <li><strong>Font size</strong> — slider 8–72 (text/note shapes)</li>
+                    </ul>
+                </section>
+
+                <!-- Toolbar -->
+                <section id="toolbar">
+                    <h2>Toolbar <a class="docs-anchor" href="#toolbar">#</a></h2>
+                    <p>The top toolbar provides:</p>
+                    <ul>
+                        <li><strong>12 tool buttons</strong> — Select, Hand, Draw, Rect, Ellipse, Diamond, Star, Hex, Tri, Text, Arrow, Eraser</li>
+                        <li><strong>Export/Import</strong> — JSON, PNG, Image</li>
+                        <li><strong>Zoom controls</strong> — +/−, Fit, 1:1</li>
+                        <li><strong>Shortcuts help</strong> — ⌨️ toggle</li>
+                        <li><strong>Dark mode</strong> — 🌙 toggle</li>
+                    </ul>
+                </section>
+
+                <!-- Style Panel -->
+                <section id="style-panel">
+                    <h2>Style Panel <a class="docs-anchor" href="#style-panel">#</a></h2>
+                    <p>Appears on the right when a shape is selected. See <a href="#styles">Styling</a> for details.</p>
+                </section>
+
+                <!-- Context Menu -->
+                <section id="context-menu">
+                    <h2>Context Menu <a class="docs-anchor" href="#context-menu">#</a></h2>
+                    <p>Right-click on the canvas to access:</p>
+                    <ul>
+                        <li><strong>With selection:</strong> Copy, Cut, Paste, Delete, Z-order, Group/Ungroup, Alignment, Distribution</li>
+                        <li><strong>Without selection:</strong> Paste, Select All, Undo, Redo</li>
+                    </ul>
+                </section>
+
+                <!-- Minimap -->
+                <section id="minimap">
+                    <h2>Minimap <a class="docs-anchor" href="#minimap">#</a></h2>
+                    <p>Overview panel in the bottom-left corner showing all shapes and the current viewport indicator.</p>
+                </section>
+
+                <!-- Dark Mode -->
+                <section id="dark-mode">
+                    <h2>Dark Mode <a class="docs-anchor" href="#dark-mode">#</a></h2>
+                    <p>Click the 🌙 button in the toolbar to toggle dark mode. Affects toolbar, panels, context menu, minimap, and pages panel.</p>
+                </section>
+
+                <!-- Persistence -->
+                <section id="persistence">
+                    <h2>Persistence <a class="docs-anchor" href="#persistence">#</a></h2>
+                    <ul>
+                        <li><strong>Auto-save:</strong> Every 5 seconds to <code>localStorage</code></li>
+                        <li><strong>Auto-load:</strong> On page startup, restores from <code>localStorage</code></li>
+                        <li><strong>Manual save:</strong> Click 💾 JSON button → copies to clipboard</li>
+                    </ul>
+                </section>
+
+                <!-- Export/Import -->
+                <section id="export">
+                    <h2>Export / Import <a class="docs-anchor" href="#export">#</a></h2>
+                    <table class="docs-table">
+                        <thead><tr><th>Format</th><th>Button</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td>JSON</td><td>💾 JSON</td><td>Copy store snapshot to clipboard</td></tr>
+                            <tr><td>PNG</td><td>🖼️ PNG</td><td>Download canvas as PNG file</td></tr>
+                            <tr><td>SVG</td><td>—</td><td>Basic SVG generation (via API)</td></tr>
+                            <tr><td>Import</td><td>📂 Import</td><td>Paste JSON from clipboard</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Images -->
+                <section id="images">
+                    <h2>Image Loading <a class="docs-anchor" href="#images">#</a></h2>
+                    <p>Click the 🖼️+ Image button to open a file picker. Selected image is:</p>
+                    <ol>
+                        <li>Read as base64 data URI via JS interop</li>
+                        <li>Dimensions extracted</li>
+                        <li>Stored as <code>TLAssetRecord</code></li>
+                        <li>Rendered as <code>SKBitmap</code> with caching</li>
+                    </ol>
+                </section>
+
+                <!-- Keyboard Shortcuts -->
+                <section id="shortcuts">
+                    <h2>Keyboard Shortcuts <a class="docs-anchor" href="#shortcuts">#</a></h2>
+                    <table class="docs-table">
+                        <thead><tr><th>Key</th><th>Action</th></tr></thead>
+                        <tbody>
+                            <tr><td><kbd>V</kbd></td><td>Select tool</td></tr>
+                            <tr><td><kbd>D</kbd></td><td>Draw tool</td></tr>
+                            <tr><td><kbd>G</kbd></td><td>Geo tool</td></tr>
+                            <tr><td><kbd>H</kbd></td><td>Hand tool</td></tr>
+                            <tr><td><kbd>T</kbd></td><td>Text tool</td></tr>
+                            <tr><td><kbd>A</kbd></td><td>Arrow tool</td></tr>
+                            <tr><td><kbd>E</kbd></td><td>Eraser tool</td></tr>
+                            <tr><td><kbd>Space</kbd>+Drag</td><td>Pan (any tool)</td></tr>
+                            <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>Undo</td></tr>
+                            <tr><td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Redo</td></tr>
+                            <tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd></td><td>Copy</td></tr>
+                            <tr><td><kbd>Ctrl</kbd>+<kbd>V</kbd></td><td>Paste</td></tr>
+                            <tr><td><kbd>Ctrl</kbd>+<kbd>X</kbd></td><td>Cut</td></tr>
+                            <tr><td><kbd>Ctrl</kbd>+<kbd>G</kbd></td><td>Group</td></tr>
+                            <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd></td><td>Ungroup</td></tr>
+                            <tr><td><kbd>Ctrl</kbd>+<kbd>A</kbd></td><td>Select all</td></tr>
+                            <tr><td><kbd>Del</kbd></td><td>Delete selected</td></tr>
+                            <tr><td><kbd>Escape</kbd></td><td>Deselect / Cancel</td></tr>
+                            <tr><td>Scroll</td><td>Zoom at cursor</td></tr>
+                            <tr><td><kbd>Shift</kbd>+Drag</td><td>Constrain proportions</td></tr>
+                            <tr><td><kbd>Alt</kbd>+Drag</td><td>Resize from center</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- API Reference -->
+                <section id="api">
+                    <h2>API Reference <a class="docs-anchor" href="#api">#</a></h2>
+
+                    <h3>Editor</h3>
+                    <table class="docs-table">
+                        <thead><tr><th>Method</th><th>Returns</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>CreateShape(type, x, y)</code></td><td><code>TLShapeRecord?</code></td><td>Create shape at position</td></tr>
+                            <tr><td><code>SetActiveTool(id)</code></td><td><code>void</code></td><td>Switch active tool</td></tr>
+                            <tr><td><code>GetTool(id)</code></td><td><code>StateNode?</code></td><td>Get tool by ID</td></tr>
+                            <tr><td><code>PushUndo()</code></td><td><code>void</code></td><td>Capture undo snapshot</td></tr>
+                            <tr><td><code>Undo()</code></td><td><code>void</code></td><td>Undo last action</td></tr>
+                            <tr><td><code>Redo()</code></td><td><code>void</code></td><td>Redo last undone action</td></tr>
+                            <tr><td><code>Copy()</code></td><td><code>void</code></td><td>Copy selected to clipboard</td></tr>
+                            <tr><td><code>Paste()</code></td><td><code>void</code></td><td>Paste from clipboard</td></tr>
+                            <tr><td><code>Cut()</code></td><td><code>void</code></td><td>Cut selected</td></tr>
+                            <tr><td><code>Align(type)</code></td><td><code>void</code></td><td>Align selected shapes</td></tr>
+                            <tr><td><code>Distribute(type)</code></td><td><code>void</code></td><td>Distribute selected shapes</td></tr>
+                            <tr><td><code>BringToFront()</code></td><td><code>void</code></td><td>Bring to front</td></tr>
+                            <tr><td><code>SendToBack()</code></td><td><code>void</code></td><td>Send to back</td></tr>
+                            <tr><td><code>GroupSelected()</code></td><td><code>void</code></td><td>Group selected shapes</td></tr>
+                            <tr><td><code>UngroupSelected()</code></td><td><code>void</code></td><td>Ungroup selected</td></tr>
+                            <tr><td><code>ExportToPng()</code></td><td><code>byte[]?</code></td><td>Export canvas as PNG</td></tr>
+                            <tr><td><code>ExportToSvg()</code></td><td><code>string</code></td><td>Export as SVG</td></tr>
+                            <tr><td><code>Invalidate()</code></td><td><code>void</code></td><td>Trigger re-render</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Camera</h3>
+                    <table class="docs-table">
+                        <thead><tr><th>Method</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>Pan(dx, dy)</code></td><td>Pan by screen delta</td></tr>
+                            <tr><td><code>ZoomAt(point, delta)</code></td><td>Zoom at screen point</td></tr>
+                            <tr><td><code>ScreenToWorld(point)</code></td><td>Convert screen → world coords</td></tr>
+                            <tr><td><code>WorldToScreen(point)</code></td><td>Convert world → screen coords</td></tr>
+                            <tr><td><code>Reset()</code></td><td>Reset to default position/zoom</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3>TLStore</h3>
+                    <table class="docs-table">
+                        <thead><tr><th>Method</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>Put(record)</code></td><td>Insert or update record</td></tr>
+                            <tr><td><code>Remove(id)</code></td><td>Remove record by ID</td></tr>
+                            <tr><td><code>Get&lt;T&gt;(id)</code></td><td>Get typed record by ID</td></tr>
+                            <tr><td><code>GetAllShapes()</code></td><td>Get all shape records</td></tr>
+                            <tr><td><code>GetPages()</code></td><td>Get all page records</td></tr>
+                            <tr><td><code>GetSnapshot()</code></td><td>Create serializable snapshot</td></tr>
+                            <tr><td><code>LoadSnapshot(s)</code></td><td>Load from snapshot</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Footer -->
+                <div class="docs-footer">
+                    <p>Built with Blazor WebAssembly + SkiaSharp. Port of <a href="https://tldraw.dev" target="_blank">tldraw</a>.</p>
+                    <p>MIT License &bull; <a href="https://github.com/your-repo/Tldraw.Blazor" target="_blank">GitHub</a></p>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+            localStorage.setItem('docs-theme', html.getAttribute('data-theme'));
+        }
+
+        // Load saved theme
+        (function () {
+            const saved = localStorage.getItem('docs-theme');
+            if (saved) document.documentElement.setAttribute('data-theme', saved);
+        })();
+
+        // Copy code
+        function copyCode(btn) {
+            const code = btn.closest('.docs-code-block').querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Active sidebar link on scroll
+        (function () {
+            const links = document.querySelectorAll('.docs-sidebar__link');
+            const sections = [];
+            links.forEach(link => {
+                const id = link.getAttribute('href')?.slice(1);
+                if (id) sections.push({ id, el: document.getElementById(id), link });
+            });
+
+            function updateActive() {
+                let current = sections[0];
+                for (const s of sections) {
+                    if (s.el && s.el.getBoundingClientRect().top <= 100) current = s;
+                }
+                links.forEach(l => l.classList.remove('active'));
+                if (current) current.link.classList.add('active');
+            }
+
+            window.addEventListener('scroll', updateActive, { passive: true });
+            updateActive();
+        })();
+    </script>
+</body>
+</html>

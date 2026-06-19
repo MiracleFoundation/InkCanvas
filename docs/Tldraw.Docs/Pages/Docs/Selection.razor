@@ -1,0 +1,65 @@
+@page "/docs/selection"
+
+<PageTitle>Selection & Transform - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Selection & Transform</h1>
+    <p class="docs-lead">Select, move, resize, and rotate shapes on the canvas.</p>
+
+    <h2 id="selecting">
+        Selecting Shapes
+        <a class="docs-anchor" href="#selecting">#</a>
+    </h2>
+    <ul>
+        <li><strong>Click</strong> — select single shape (topmost at point)</li>
+        <li><strong>Shift+Click</strong> — toggle shape in/out of selection</li>
+        <li><strong>Drag on empty space</strong> — rubber-band selection (blue rectangle)</li>
+        <li><strong>Ctrl+A</strong> — select all shapes</li>
+        <li><strong>Escape</strong> — clear selection</li>
+    </ul>
+
+    <h2 id="moving">
+        Moving
+        <a class="docs-anchor" href="#moving">#</a>
+    </h2>
+    <p>Drag any selected shape to move all selected shapes together. Arrow bindings auto-update when bound shapes move.</p>
+
+    <h2 id="resizing">
+        Resizing
+        <a class="docs-anchor" href="#resizing">#</a>
+    </h2>
+    <p>Selection shows 8 resize handles (corners + edge midpoints):</p>
+    <ul>
+        <li><strong>Corner handles</strong> — resize in both dimensions</li>
+        <li><strong>Edge handles</strong> — resize in one dimension</li>
+        <li><strong>Shift+Drag</strong> — constrain proportions (corners only)</li>
+        <li><strong>Alt+Drag</strong> — resize from center</li>
+        <li><strong>Escape</strong> — cancel resize, restore original bounds</li>
+    </ul>
+    <p>Multi-shape resize: all selected shapes resize together when dragging any handle.</p>
+
+    <h2 id="rotating">
+        Rotating
+        <a class="docs-anchor" href="#rotating">#</a>
+    </h2>
+    <p>The rotation handle is a circle above the top-center of the selection:</p>
+    <ul>
+        <li><strong>Drag</strong> — rotate around selection center</li>
+        <li><strong>Shift+Drag</strong> — snap to 15° increments</li>
+        <li><strong>Escape</strong> — cancel rotation</li>
+    </ul>
+
+    <h2 id="cursors">
+        Cursor Feedback
+        <a class="docs-anchor" href="#cursors">#</a>
+    </h2>
+    <ApiTable>
+        <ApiRow Name="default" Type="cursor" Default="" Desc="No handle hovered" />
+        <ApiRow Name="nwse-resize" Type="cursor" Default="" Desc="Top-left / Bottom-right handle" />
+        <ApiRow Name="nesw-resize" Type="cursor" Default="" Desc="Top-right / Bottom-left handle" />
+        <ApiRow Name="ns-resize" Type="cursor" Default="" Desc="Top-center / Bottom-center handle" />
+        <ApiRow Name="ew-resize" Type="cursor" Default="" Desc="Mid-left / Mid-right handle" />
+        <ApiRow Name="crosshair" Type="cursor" Default="" Desc="Rotation handle" />
+        <ApiRow Name="grab/grabbing" Type="cursor" Default="" Desc="Hand tool / Space+drag" />
+    </ApiTable>
+</div>

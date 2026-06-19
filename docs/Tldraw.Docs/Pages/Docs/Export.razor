@@ -1,0 +1,41 @@
+@page "/docs/export"
+
+<PageTitle>Export / Import - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Export / Import</h1>
+    <p class="docs-lead">Export canvas to JSON, PNG, or SVG. Import from JSON.</p>
+
+    <h2 id="formats">
+        Formats
+        <a class="docs-anchor" href="#formats">#</a>
+    </h2>
+
+    <ApiTable>
+        <ApiRow Name="JSON" Type="format" Default="💾 button" Desc="Store snapshot to clipboard" />
+        <ApiRow Name="PNG" Type="format" Default="🖼️ button" Desc="Download canvas as PNG file" />
+        <ApiRow Name="SVG" Type="format" Default="API only" Desc="Basic SVG generation" />
+        <ApiRow Name="Import" Type="format" Default="📂 button" Desc="Load JSON from clipboard" />
+    </ApiTable>
+
+    <h2 id="api">
+        Export API
+        <a class="docs-anchor" href="#api">#</a>
+    </h2>
+    <CodeBlock Language="csharp" Code="@(@"// Export PNG (returns raw bytes)
+var pngBytes = editor.ExportToPng(width: 1920, height: 1080);
+
+// Export SVG
+var svgString = editor.ExportToSvg();
+
+// Export JSON
+var json = editor.Store.GetSnapshot().ToJson();
+
+// Import JSON
+var snapshot = TLStoreSnapshot.FromJson(json);
+editor.PushUndo();
+editor.Store.LoadSnapshot(snapshot);
+
+// Image loading (from JS interop data URI)
+editor.CreateImageShape(""photo.jpg"", dataUri, 800, 600, 100, 100);")" />
+</div>

@@ -1,0 +1,48 @@
+@page "/docs/layout"
+
+<PageTitle>Layout & Composition - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Layout & Composition</h1>
+    <p class="docs-lead">Alignment, distribution, z-ordering, and grouping tools.</p>
+
+    <h2 id="alignment">
+        Alignment
+        <a class="docs-anchor" href="#alignment">#</a>
+    </h2>
+    <p>Select 2+ shapes, right-click → Alignment. Or use API:</p>
+    <CodeBlock Language="csharp" Code="@(@"editor.Align(Editor.AlignType.Left);
+editor.Align(Editor.AlignType.Center);
+editor.Align(Editor.AlignType.Right);
+editor.Align(Editor.AlignType.Top);
+editor.Align(Editor.AlignType.Middle);
+editor.Align(Editor.AlignType.Bottom);")" />
+
+    <h2 id="distribution">
+        Distribution
+        <a class="docs-anchor" href="#distribution">#</a>
+    </h2>
+    <p>Select 3+ shapes for even spacing:</p>
+    <CodeBlock Language="csharp" Code="@(@"editor.Distribute(Editor.DistributeType.Horizontal);
+editor.Distribute(Editor.DistributeType.Vertical);")" />
+
+    <h2 id="z-ordering">
+        Z-Ordering
+        <a class="docs-anchor" href="#z-ordering">#</a>
+    </h2>
+    <CodeBlock Language="csharp" Code="@(@"editor.BringToFront();
+editor.SendToBack();
+editor.BringForward();
+editor.SendBackward();")" />
+
+    <h2 id="grouping">
+        Grouping
+        <a class="docs-anchor" href="#grouping">#</a>
+    </h2>
+    <ApiTable>
+        <ApiRow Name="Ctrl+G" Type="shortcut" Default="" Desc="Group selected shapes" />
+        <ApiRow Name="Ctrl+Shift+G" Type="shortcut" Default="" Desc="Ungroup selected groups" />
+    </ApiTable>
+    <CodeBlock Language="csharp" Code="@(@"editor.GroupSelected();
+editor.UngroupSelected();")" />
+</div>

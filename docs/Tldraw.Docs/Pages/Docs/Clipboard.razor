@@ -1,0 +1,19 @@
+@page "/docs/clipboard"
+
+<PageTitle>Clipboard - Tldraw.Blazor Docs</PageTitle>
+
+<div class="docs-content">
+    <h1>Clipboard</h1>
+    <p class="docs-lead">Copy, cut, and paste shapes using keyboard shortcuts.</p>
+
+    <ApiTable>
+        <ApiRow Name="Ctrl+C" Type="shortcut" Default="" Desc="Copy selected shapes (serialized to JSON)" />
+        <ApiRow Name="Ctrl+V" Type="shortcut" Default="" Desc="Paste shapes (new IDs, offset +20px)" />
+        <ApiRow Name="Ctrl+X" Type="shortcut" Default="" Desc="Cut selected (copy + delete)" />
+    </ApiTable>
+
+    <CodeBlock Language="csharp" Code="@(@"// Programmatic clipboard
+editor.Copy();   // Copy selected to internal clipboard
+editor.Paste();  // Paste with new IDs and offset
+editor.Cut();    // Copy + delete selected")" />
+</div>
