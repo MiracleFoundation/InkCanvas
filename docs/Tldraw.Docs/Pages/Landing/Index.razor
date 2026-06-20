@@ -1,0 +1,343 @@
+@page "/"
+@layout LandingLayout
+
+<PageTitle>Tldraw.Blazor — Infinite Canvas SDK for Blazor</PageTitle>
+
+<nav class="nav">
+    <div class="nav__inner">
+        <a href="/" class="nav__logo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M3 9h18"/>
+                <path d="M9 21V9"/>
+            </svg>
+            Tldraw.Blazor
+        </a>
+        <div class="nav__links">
+            <a href="#why">Product</a>
+            <a href="#inside">Developers</a>
+            <a href="#community">Community</a>
+            <a href="docs">Docs</a>
+        </div>
+        <div class="nav__right">
+            <a href="https://github.com/your-repo/Tldraw.Blazor" target="_blank" class="nav__gh">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub
+            </a>
+            <a href="docs" class="nav__cta">Quick Start</a>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero__content">
+        <div class="hero__eyebrow">Open Source · Blazor + SkiaSharp</div>
+        <h1 class="hero__title">Build infinite canvas apps in Blazor</h1>
+        <p class="hero__subtitle">
+            A high-performance whiteboard SDK powered by SkiaSharp. Pure C# engine with shape types, tools, arrow bindings, undo/redo, and touch support.
+        </p>
+        <div class="hero__actions">
+            <a href="docs" class="btn btn--dark">
+                Read the Docs
+                <span class="btn__arrow">&rarr;</span>
+            </a>
+            <a href="docs/quick-start" class="btn btn--ghost">
+                Quick Start
+            </a>
+        </div>
+        <div class="hero__install">
+            <span class="prompt">$</span>
+            <code>git clone https://github.com/your-repo/Tldraw.Blazor.git</code>
+            <button class="hero__copy" onclick="navigator.clipboard.writeText('git clone https://github.com/your-repo/Tldraw.Blazor.git')">Copy</button>
+        </div>
+    </div>
+    <div class="hero__demo">
+        <div class="code-card">
+            <div class="code-card__header">
+                <div class="code-card__dots">
+                    <span class="code-card__dot"></span>
+                    <span class="code-card__dot"></span>
+                    <span class="code-card__dot"></span>
+                </div>
+                <div class="code-card__tabs">
+                    <span class="code-card__tab active">Home.razor</span>
+                    <span class="code-card__tab">Editor.cs</span>
+                </div>
+            </div>
+            <pre class="code-card__body"><code><span class="ck">@@using</span> Tldraw.Blazor.Skia
+<span class="ck">@@using</span> Tldraw.Blazor.Core.Editor
+
+&lt;<span class="cTag">TldrawCanvas</span> <span class="cAttr">Editor</span>=<span class="cs">"_editor"</span> /&gt;
+
+<span class="ck">@@code</span> {
+    <span class="ck">private</span> <span class="ct">Editor</span> _editor = <span class="ck">new</span>();
+
+    <span class="ck">protected override void</span> <span class="cf">OnInitialized</span>()
+    {
+        <span class="cc">// Create shapes programmatically</span>
+        _editor.<span class="cf">CreateShape</span>(<span class="cs">"geo"</span>, <span class="cn">100</span>, <span class="cn">100</span>);
+        <span class="ck">var</span> rect = _editor.Store
+            .<span class="cf">GetAllShapes</span>().<span class="cf">Last</span>();
+        rect.Style.Fill = <span class="cs">"#E3F2FD"</span>;
+    }
+}</code></pre>
+        </div>
+    </div>
+</section>
+
+<section class="logos">
+    <div class="logos__title">Built with Tldraw.Blazor</div>
+    <div class="logos__track">
+        <div class="logos__set">
+            <span class="logos__item">Blazor</span>
+            <span class="logos__item">.NET 10</span>
+            <span class="logos__item">SkiaSharp</span>
+            <span class="logos__item">WebAssembly</span>
+            <span class="logos__item">MAUI</span>
+            <span class="logos__item">SignalR</span>
+            <span class="logos__item">MudBlazor</span>
+            <span class="logos__item">Radzen</span>
+        </div>
+        <div class="logos__set">
+            <span class="logos__item">Blazor</span>
+            <span class="logos__item">.NET 10</span>
+            <span class="logos__item">SkiaSharp</span>
+            <span class="logos__item">WebAssembly</span>
+            <span class="logos__item">MAUI</span>
+            <span class="logos__item">SignalR</span>
+            <span class="logos__item">MudBlazor</span>
+            <span class="logos__item">Radzen</span>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="why">
+    <div class="section__container">
+        <div class="section__eyebrow">Why Tldraw.Blazor</div>
+        <h2 class="section__title">Everything you need for infinite canvas</h2>
+        <p class="section__subtitle">Ported from the tldraw SDK to pure C# — a production-grade canvas engine for .NET developers.</p>
+        <div class="why-grid">
+            <div class="why-card">
+                <div class="why-card__num">01</div>
+                <h3 class="why-card__title">Canvas infrastructure</h3>
+                <p class="why-card__desc">Viewport culling, shape caching with SKBitmap, adaptive grid rendering. Handles thousands of shapes without frame drops.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-card__num">02</div>
+                <h3 class="why-card__title">Accelerate development</h3>
+                <p class="why-card__desc">8 shape types, 8 interactive tools, arrow bindings, undo/redo, clipboard, and touch support — all built in.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-card__num">03</div>
+                <h3 class="why-card__title">Customize, extend, control</h3>
+                <p class="why-card__desc">Reactive store with change events. Shape utils for custom rendering. Style system with color, fill, stroke, opacity, dash, radius, and font controls.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-card__num">04</div>
+                <h3 class="why-card__title">Pure C# — no JS required</h3>
+                <p class="why-card__desc">Core logic runs entirely in C# via SkiaSharp. Hardware-accelerated rendering with minimal JavaScript interop.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section--alt">
+    <div class="section__container">
+        <div class="section__eyebrow">Use cases</div>
+        <h2 class="section__title">What you can build</h2>
+        <p class="section__subtitle">From whiteboards to workflow tools — Tldraw.Blazor powers canvas-based apps of any kind.</p>
+        <div class="showcase-grid">
+            <div class="showcase-card">
+                <div class="showcase-card__img"><div class="showcase-card__img-inner">whiteboard-preview</div></div>
+                <div class="showcase-card__body">
+                    <div class="showcase-card__tag">Whiteboard</div>
+                    <h3 class="showcase-card__title">Collaborative Whiteboard</h3>
+                    <p class="showcase-card__desc">Real-time drawing canvas with freehand strokes, shapes, text, arrows, and eraser tools. Multiplayer-ready with SignalR.</p>
+                    <a href="docs/quick-start" class="showcase-card__link">Read more <span>&rarr;</span></a>
+                </div>
+            </div>
+            <div class="showcase-card">
+                <div class="showcase-card__img"><div class="showcase-card__img-inner">flow-builder-preview</div></div>
+                <div class="showcase-card__body">
+                    <div class="showcase-card__tag">Flow Builder</div>
+                    <h3 class="showcase-card__title">Visual Flow Editor</h3>
+                    <p class="showcase-card__desc">Arrow bindings snap endpoints to shapes and auto-follow when nodes move. Build workflow editors, mind maps, and diagram tools.</p>
+                    <a href="docs/arrows" class="showcase-card__link">Read more <span>&rarr;</span></a>
+                </div>
+            </div>
+            <div class="showcase-card">
+                <div class="showcase-card__img"><div class="showcase-card__img-inner">design-tool-preview</div></div>
+                <div class="showcase-card__body">
+                    <div class="showcase-card__tag">Design Tool</div>
+                    <h3 class="showcase-card__title">Design &amp; Prototyping</h3>
+                    <p class="showcase-card__desc">8-handle resize, rotation, alignment, distribution, z-ordering, and grouping. A full selection and transform system.</p>
+                    <a href="docs/selection" class="showcase-card__link">Read more <span>&rarr;</span></a>
+                </div>
+            </div>
+            <div class="showcase-card">
+                <div class="showcase-card__img"><div class="showcase-card__img-inner">presentation-preview</div></div>
+                <div class="showcase-card__body">
+                    <div class="showcase-card__tag">Presentation</div>
+                    <h3 class="showcase-card__title">Slide &amp; Canvas Apps</h3>
+                    <p class="showcase-card__desc">Frame shapes with labels, image loading from file picker, export to PNG/SVG, and auto-save to localStorage every 5 seconds.</p>
+                    <a href="docs/persistence" class="showcase-card__link">Read more <span>&rarr;</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="inside">
+    <div class="section__container">
+        <div class="section__eyebrow">SDK Reference</div>
+        <h2 class="section__title">What's inside</h2>
+        <p class="section__subtitle">A complete SDK for building canvas-based applications in Blazor.</p>
+        <div class="inside-grid">
+            <div class="inside-card">
+                <div class="inside-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M3 9h6"/></svg></div>
+                <h3>Selection &amp; Transform</h3>
+                <p>Full selection logic with click, shift-click, rubber-band. Resize with 8 handles, rotation, multi-shape transform.</p>
+                <a href="docs/selection" class="inside-card__link">Learn more <span>&rarr;</span></a>
+            </div>
+            <div class="inside-card">
+                <div class="inside-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
+                <h3>Arrow System</h3>
+                <p>Create arrows with auto-binding endpoints. Edit endpoints, rebind to shapes, visual feedback with green/blue dots.</p>
+                <a href="docs/arrows" class="inside-card__link">Learn more <span>&rarr;</span></a>
+            </div>
+            <div class="inside-card">
+                <div class="inside-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+                <h3>Layout &amp; Composition</h3>
+                <p>Alignment (6 directions), distribution, z-ordering, grouping/ungrouping. All via context menu or API.</p>
+                <a href="docs/layout" class="inside-card__link">Learn more <span>&rarr;</span></a>
+            </div>
+            <div class="inside-card">
+                <div class="inside-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48 2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83"/></svg></div>
+                <h3>Style System</h3>
+                <p>Style panel with color, fill, stroke, opacity, dash, radius, font controls. Customizable per shape.</p>
+                <a href="docs/styling" class="inside-card__link">Learn more <span>&rarr;</span></a>
+            </div>
+            <div class="inside-card">
+                <div class="inside-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></div>
+                <h3>Persistence</h3>
+                <p>Auto-save to localStorage every 5 seconds. Export/Import JSON, PNG, SVG. Image loading from file picker.</p>
+                <a href="docs/persistence" class="inside-card__link">Learn more <span>&rarr;</span></a>
+            </div>
+            <div class="inside-card">
+                <div class="inside-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+                <h3>Reactive Store</h3>
+                <p>Centralized record store with change events. JSON polymorphic serialization. Snapshot-based undo/redo.</p>
+                <a href="docs/store" class="inside-card__link">Learn more <span>&rarr;</span></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section--alt" id="community">
+    <div class="section__container">
+        <div class="section__eyebrow">By the numbers</div>
+        <h2 class="section__title">Built in the open</h2>
+        <p class="section__subtitle">Backed by the .NET and tldraw ecosystems.</p>
+        <div class="community-grid">
+            <div class="community-stat"><div class="community-stat__number">8</div><div class="community-stat__label">Shape types</div></div>
+            <div class="community-stat"><div class="community-stat__number">8</div><div class="community-stat__label">Interactive tools</div></div>
+            <div class="community-stat"><div class="community-stat__number">70+</div><div class="community-stat__label">Features implemented</div></div>
+            <div class="community-stat"><div class="community-stat__number">20+</div><div class="community-stat__label">Keyboard shortcuts</div></div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="section__container">
+        <div class="section__eyebrow">Templates</div>
+        <h2 class="section__title">Starter kits</h2>
+        <p class="section__subtitle">Production-ready templates to get you building fast.</p>
+        <div class="kits-grid">
+            <div class="kit-card">
+                <div class="kit-card__img"><div class="kit-card__img-inner">whiteboard-kit</div></div>
+                <div class="kit-card__body">
+                    <h3 class="kit-card__title">Whiteboard starter kit</h3>
+                    <p class="kit-card__desc">Full canvas with toolbar, style panel, context menu, minimap, pages panel, dark mode, and auto-save.</p>
+                    <a href="docs/quick-start" class="kit-card__link">Get started <span>&rarr;</span></a>
+                </div>
+            </div>
+            <div class="kit-card">
+                <div class="kit-card__img"><div class="kit-card__img-inner">flow-kit</div></div>
+                <div class="kit-card__body">
+                    <h3 class="kit-card__title">Flow editor kit</h3>
+                    <p class="kit-card__desc">Arrow-focused template with binding-aware shapes, connection indicators, and workflow-oriented toolbar presets.</p>
+                    <a href="docs/arrows" class="kit-card__link">Get started <span>&rarr;</span></a>
+                </div>
+            </div>
+            <div class="kit-card">
+                <div class="kit-card__img"><div class="kit-card__img-inner">minimal-kit</div></div>
+                <div class="kit-card__body">
+                    <h3 class="kit-card__title">Minimal canvas kit</h3>
+                    <p class="kit-card__desc">Bare canvas component with programmatic API access. Build your own UI around the engine. Just the core.</p>
+                    <a href="docs/quick-start" class="kit-card__link">Get started <span>&rarr;</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="quote-section">
+    <div class="quote__mark">&ldquo;</div>
+    <blockquote>
+        <p class="quote__text">Tldraw.Blazor gave us a production-ready canvas in weeks instead of months. The SkiaSharp engine handles everything we throw at it.</p>
+        <cite class="quote__attr">— A developer building with Tldraw.Blazor</cite>
+    </blockquote>
+</section>
+
+<section class="cta-section">
+    <div class="cta-section__inner">
+        <h2>Ready to build?</h2>
+        <p>Start creating infinite canvas applications in Blazor today.</p>
+        <div class="cta-section__actions">
+            <a href="docs" class="btn btn--dark">Read the Docs</a>
+            <a href="docs/quick-start" class="btn btn--ghost">Quick Start <span class="btn__arrow">&rarr;</span></a>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__top">
+            <div class="footer__brand">
+                <div class="footer__logo">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                    Tldraw.Blazor
+                </div>
+                <p class="footer__tagline">The infinite canvas SDK for Blazor. Open source, powered by SkiaSharp.</p>
+                <div class="footer__social">
+                    <a href="https://github.com/your-repo/Tldraw.Blazor" target="_blank" title="GitHub"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
+                </div>
+            </div>
+            <div class="footer__links">
+                <div class="footer__col">
+                    <h4>Product</h4>
+                    <a href="docs">Documentation</a>
+                    <a href="docs/api">API Reference</a>
+                    <a href="docs/shortcuts">Keyboard Shortcuts</a>
+                </div>
+                <div class="footer__col">
+                    <h4>Developers</h4>
+                    <a href="docs/quick-start">Quick Start</a>
+                    <a href="docs/architecture">Architecture</a>
+                    <a href="docs/shapes">Shapes</a>
+                    <a href="docs/tools">Tools</a>
+                </div>
+                <div class="footer__col">
+                    <h4>Community</h4>
+                    <a href="https://github.com/your-repo/Tldraw.Blazor" target="_blank">GitHub</a>
+                    <a href="#">Discord</a>
+                    <a href="#">Twitter</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer__bottom">
+            <span>&copy; 2026 Tldraw.Blazor</span>
+            <span>MIT License</span>
+        </div>
+    </div>
+</footer>

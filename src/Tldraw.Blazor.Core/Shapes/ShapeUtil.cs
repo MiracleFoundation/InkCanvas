@@ -10,7 +10,7 @@ namespace Tldraw.Blazor.Core.Shapes;
 /// </summary>
 public abstract class ShapeUtil
 {
-    /// <summary>The shape type this util handles (e.g. "geo", "draw").</summary>
+    /// <summary>The shape type this util handles.</summary>
     public abstract string ShapeType { get; }
 
     /// <summary>Create a shape record with default props at the given position.</summary>
@@ -29,12 +29,10 @@ public abstract class ShapeUtil
         return bounds.Contains((float)worldPoint.X, (float)worldPoint.Y);
     }
 
-    // ── Helpers ─────────────────────────────────────────────
-
     /// <summary>Parse a hex color string to SKColor.</summary>
     protected static SKColor ParseColor(string hex, double opacity = 1.0)
     {
-        if (string.IsNullOrEmpty(hex) || hex == "none")
+        if (string.IsNullOrEmpty(hex) || hex == FillConstants.None)
             return SKColors.Transparent;
 
         hex = hex.TrimStart('#');
@@ -60,15 +58,15 @@ public abstract class ShapeUtil
         {
             Color = ParseColor(style.Color, style.Opacity),
             Style = SKPaintStyle.Stroke,
-            StrokeWidth = (float)(style.StrokeWidth),
+            StrokeWidth = (float)(double)style.StrokeWidth,
             IsAntialias = true,
             StrokeCap = SKStrokeCap.Round,
             StrokeJoin = SKStrokeJoin.Round,
         };
 
-        if (style.DashPattern == "dashed")
+        if (style.DashPattern == DashPattern.Dashed)
             paint.PathEffect = SKPathEffect.CreateDash(new float[] { 8, 4 }, 0);
-        else if (style.DashPattern == "dotted")
+        else if (style.DashPattern == DashPattern.Dotted)
             paint.PathEffect = SKPathEffect.CreateDash(new float[] { 2, 4 }, 0);
 
         return paint;

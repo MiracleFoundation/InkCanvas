@@ -1,4 +1,5 @@
 using SkiaSharp;
+using Tldraw.Blazor.Core;
 using Editor = Tldraw.Blazor.Core.Editor.Editor;
 
 namespace Tldraw.Blazor.Core.Tools;
@@ -9,7 +10,7 @@ namespace Tldraw.Blazor.Core.Tools;
 /// </summary>
 public class HandTool : StateNode
 {
-    public override string Id => "hand";
+    public override string Id => ToolId.Hand.ToValue();
 
     public HandTool()
     {
@@ -22,7 +23,6 @@ public class HandTool : StateNode
         Transition("idle");
     }
 
-    // ── Idle State ──────────────────────────────────────────
 
     public class IdleState : StateNode
     {
@@ -40,11 +40,10 @@ public class HandTool : StateNode
         public override void OnKeyDown(KeyEvent e)
         {
             if (e.Key == "Escape")
-                Editor.SetActiveTool("select");
+                Editor.SetActiveTool(ToolId.Select);
         }
     }
 
-    // ── Panning State ───────────────────────────────────────
 
     public class PanningState : StateNode
     {
@@ -70,7 +69,6 @@ public class HandTool : StateNode
         }
     }
 
-    // ── Shared state ────────────────────────────────────────
 
     internal SKPoint LastScreen;
 }

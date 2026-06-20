@@ -1,4 +1,5 @@
 using SkiaSharp;
+using Tldraw.Blazor.Core;
 using Tldraw.Blazor.Core.Editor;
 using Tldraw.Blazor.Core.Store;
 using Editor = Tldraw.Blazor.Core.Editor.Editor;
@@ -11,7 +12,7 @@ namespace Tldraw.Blazor.Core.Tools;
 /// </summary>
 public class ArrowTool : StateNode
 {
-    public override string Id => "arrow";
+    public override string Id => ToolId.Arrow.ToValue();
 
     public ArrowTool()
     {
@@ -23,8 +24,6 @@ public class ArrowTool : StateNode
     {
         Transition("idle");
     }
-
-    // ── Idle State ──────────────────────────────────────────
 
     public class IdleState : StateNode
     {
@@ -47,16 +46,16 @@ public class ArrowTool : StateNode
                 Height = 0,
                 Style = new TLShapeStyle
                 {
-                    Color = "#1e1e1e",
-                    Fill = "none",
-                    StrokeWidth = 2,
+                    Color = new("#1e1e1e"),
+                    Fill = new(FillConstants.None),
+                    StrokeWidth = new(2),
                 },
                 Props = new TLArrowProps
                 {
-                    Waypoints = new List<List<double>>
+                    Waypoints = new List<SKPoint>
                     {
-                        new() { 0, 0 },
-                        new() { 0, 0 }
+                        new(0, 0),
+                        new(0, 0)
                     }
                 }
             };
@@ -70,11 +69,9 @@ public class ArrowTool : StateNode
         public override void OnKeyDown(KeyEvent e)
         {
             if (e.Key == "Escape")
-                Editor.SetActiveTool("select");
+                Editor.SetActiveTool(ToolId.Select);
         }
     }
-
-    // ── Drawing State ───────────────────────────────────────
 
     public class DrawingState : StateNode
     {
@@ -92,26 +89,20 @@ public class ArrowTool : StateNode
 
             _tool.EndPoint = new SKPointd(e.WorldX, e.WorldY);
 
-            // Update waypoints (relative to shape origin)
-            arrow.Waypoints[1] = new List<double>
-            {
-                e.WorldX - shape.X,
-                e.WorldY - shape.Y
-            };
-
-            // Update bounding box
-            var minX = Math.Min(0, e.WorldX - shape.X);
-            var minY = Math.Min(0, e.WorldY - shape.Y);
-            var maxX = Math.Max(0, e.WorldX - shape.X);
-            var maxY = Math.Max(0, e.WorldY - shape.Y);
+            // Update last waypoint (relative to shape origin)
+            arrow.Waypoints[1] = new SKPoint(
+                (float)(e.WorldX - shape.X),
+                (float)(e.WorldY - shape.Y));
 
             // Adjust shape position if end point extends before start
             if (e.WorldX < shape.X)
             {
                 shape.Width = shape.X + shape.Width - e.WorldX;
                 shape.X = e.WorldX;
-                arrow.Waypoints[0][0] = _tool.StartPoint.X - shape.X;
-                arrow.Waypoints[1][0] = 0;
+                arrow.Waypoints[0] = new SKPoint(
+                    (float)(_tool.StartPoint.X - shape.X),
+                    arrow.Waypoints[0].Y);
+                arrow.Waypoints[1] = new SKPoint(0, arrow.Waypoints[1].Y);
             }
             else
             {
@@ -122,8 +113,10 @@ public class ArrowTool : StateNode
             {
                 shape.Height = shape.Y + shape.Height - e.WorldY;
                 shape.Y = e.WorldY;
-                arrow.Waypoints[0][1] = _tool.StartPoint.Y - shape.Y;
-                arrow.Waypoints[1][1] = 0;
+                arrow.Waypoints[0] = new SKPoint(
+                    arrow.Waypoints[0].X,
+                    (float)(_tool.StartPoint.Y - shape.Y));
+                arrow.Waypoints[1] = new SKPoint(arrow.Waypoints[1].X, 0);
             }
             else
             {
@@ -140,29 +133,23 @@ public class ArrowTool : StateNode
                 var shape = Editor.Store.Get<TLShapeRecord>(_tool.CurrentShapeId);
                 if (shape != null)
                 {
-                    // If too small (just a click), give default size
                     if (Math.Abs(shape.Width) < 5 && Math.Abs(shape.Height) < 5)
                     {
                         shape.Width = 200;
                         shape.Height = 0;
                         if (shape.Props is TLArrowProps arrow)
-                        {
-                            arrow.Waypoints[1] = new List<double> { 200, 0 };
-                        }
+                            arrow.Waypoints[1] = new SKPoint(200, 0);
                     }
 
-                    // Try to bind endpoints to nearby shapes
                     if (shape.Props is TLArrowProps arrowProps && arrowProps.Waypoints.Count >= 2)
                     {
-                        // Bind start
-                        var startX = shape.X + arrowProps.Waypoints[0][0];
-                        var startY = shape.Y + arrowProps.Waypoints[0][1];
-                        Editor.TryBindArrowEndpoint(shape.Id, "start", startX, startY);
+                        var startX = shape.X + arrowProps.Waypoints[0].X;
+                        var startY = shape.Y + arrowProps.Waypoints[0].Y;
+                        Editor.TryBindArrowEndpoint(shape.Id, ArrowEndpoint.Start, startX, startY);
 
-                        // Bind end
-                        var endX = shape.X + arrowProps.Waypoints[^1][0];
-                        var endY = shape.Y + arrowProps.Waypoints[^1][1];
-                        Editor.TryBindArrowEndpoint(shape.Id, "end", endX, endY);
+                        var endX = shape.X + arrowProps.Waypoints[^1].X;
+                        var endY = shape.Y + arrowProps.Waypoints[^1].Y;
+                        Editor.TryBindArrowEndpoint(shape.Id, ArrowEndpoint.End, endX, endY);
                     }
                 }
             }
@@ -172,8 +159,6 @@ public class ArrowTool : StateNode
             Editor.Invalidate();
         }
     }
-
-    // ── Shared state ────────────────────────────────────────
 
     internal string? CurrentShapeId;
     internal SKPointd StartPoint;

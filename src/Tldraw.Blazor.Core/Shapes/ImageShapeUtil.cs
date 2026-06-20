@@ -20,7 +20,7 @@ public class ImageShapeUtil : ShapeUtil
         Y = y,
         Width = 200,
         Height = 200,
-        Style = new TLShapeStyle { Color = "#ccc", Fill = "none", StrokeWidth = 1 },
+        Style = new TLShapeStyle { Color = new("#ccc"), Fill = new(FillConstants.None), StrokeWidth = new(1) },
         Props = new TLImageProps { AssetId = "" }
     };
 

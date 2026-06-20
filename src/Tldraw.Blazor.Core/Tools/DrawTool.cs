@@ -1,4 +1,5 @@
 using SkiaSharp;
+using Tldraw.Blazor.Core;
 using Tldraw.Blazor.Core.Editor;
 using Tldraw.Blazor.Core.Store;
 using Editor = Tldraw.Blazor.Core.Editor.Editor;
@@ -11,7 +12,7 @@ namespace Tldraw.Blazor.Core.Tools;
 /// </summary>
 public class DrawTool : StateNode
 {
-    public override string Id => "draw";
+    public override string Id => ToolId.Draw.ToValue();
 
     public DrawTool()
     {
@@ -24,7 +25,6 @@ public class DrawTool : StateNode
         Transition("idle");
     }
 
-    // ── Idle State ──────────────────────────────────────────
 
     public class IdleState : StateNode
     {
@@ -45,15 +45,15 @@ public class DrawTool : StateNode
                 Height = 0,
                 Style = new TLShapeStyle
                 {
-                    Color = "#1e1e1e",
-                    Fill = "none",
-                    StrokeWidth = 2.5,
+                    Color = new("#1e1e1e"),
+                    Fill = new(FillConstants.None),
+                    StrokeWidth = new(2.5),
                 },
                 Props = new TLDrawProps
                 {
-                    Segments = new List<List<double>>
+                    Segments = new List<List<SKPoint>>
                     {
-                        new() { 0, 0 } // first point relative to shape origin
+                        new() { new SKPoint(0, 0) }
                     }
                 }
             };
@@ -70,12 +70,11 @@ public class DrawTool : StateNode
             if (e.Key == "Escape")
             {
                 // Switch back to select tool
-                Editor.SetActiveTool("select");
+                Editor.SetActiveTool(ToolId.Select);
             }
         }
     }
 
-    // ── Drawing State ───────────────────────────────────────
 
     public class DrawingState : StateNode
     {
@@ -96,11 +95,7 @@ public class DrawTool : StateNode
             var relY = e.WorldY - shape.Y;
 
             var lastSegment = draw.Segments.LastOrDefault();
-            if (lastSegment != null)
-            {
-                lastSegment.Add(relX);
-                lastSegment.Add(relY);
-            }
+            lastSegment?.Add(new SKPoint((float)relX, (float)relY));
 
             // Update bounding box
             shape.Width = Math.Max(shape.Width, Math.Abs(relX) + 10);
@@ -127,7 +122,6 @@ public class DrawTool : StateNode
         }
     }
 
-    // ── Shared state ────────────────────────────────────────
 
     internal string? CurrentShapeId;
     internal SKPointd LastWorld;

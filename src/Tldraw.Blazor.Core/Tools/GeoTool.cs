@@ -1,4 +1,5 @@
 using SkiaSharp;
+using Tldraw.Blazor.Core;
 using Tldraw.Blazor.Core.Editor;
 using Tldraw.Blazor.Core.Store;
 using Editor = Tldraw.Blazor.Core.Editor.Editor;
@@ -11,10 +12,10 @@ namespace Tldraw.Blazor.Core.Tools;
 /// </summary>
 public class GeoTool : StateNode
 {
-    public override string Id => "geo";
+    public override string Id => ToolId.Geo.ToValue();
 
-    /// <summary>The geo type to create (rectangle, ellipse, diamond, star, hexagon, triangle).</summary>
-    public string GeoType { get; set; } = "rectangle";
+    /// <summary>The geo type to create.</summary>
+    public GeoVariant GeoType { get; set; } = GeoVariant.Rectangle;
 
     public GeoTool()
     {
@@ -27,7 +28,6 @@ public class GeoTool : StateNode
         Transition("idle");
     }
 
-    // ── Idle State ──────────────────────────────────────────
 
     public class IdleState : StateNode
     {
@@ -51,9 +51,9 @@ public class GeoTool : StateNode
                 Height = 0,
                 Style = new TLShapeStyle
                 {
-                    Color = "#1e1e1e",
-                    Fill = "#E3F2FD",
-                    StrokeWidth = 2,
+                    Color = new("#1e1e1e"),
+                    Fill = new("#E3F2FD"),
+                    StrokeWidth = new(2),
                 },
                 Props = new TLGeoProps
                 {
@@ -71,12 +71,11 @@ public class GeoTool : StateNode
         {
             if (e.Key == "Escape")
             {
-                Editor.SetActiveTool("select");
+                Editor.SetActiveTool(ToolId.Select);
             }
         }
     }
 
-    // ── Creating State ──────────────────────────────────────
 
     public class CreatingState : StateNode
     {
@@ -136,7 +135,6 @@ public class GeoTool : StateNode
         }
     }
 
-    // ── Shared state ────────────────────────────────────────
 
     internal string? CurrentShapeId;
     internal SKPointd DragStart;

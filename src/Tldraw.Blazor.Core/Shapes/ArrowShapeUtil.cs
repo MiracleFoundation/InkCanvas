@@ -22,16 +22,16 @@ public class ArrowShapeUtil : ShapeUtil
         Height = 0,
         Style = new TLShapeStyle
         {
-            Color = "#1e1e1e",
-            Fill = "none",
-            StrokeWidth = 2,
+            Color = new("#1e1e1e"),
+            Fill = new(FillConstants.None),
+            StrokeWidth = new(2),
         },
         Props = new TLArrowProps
         {
-            Waypoints = new List<List<double>>
+            Waypoints = new List<SKPoint>
             {
-                new() { 0, 0 },
-                new() { 200, 0 }
+                new(0, 0),
+                new(200, 0)
             }
         }
     };
@@ -45,32 +45,27 @@ public class ArrowShapeUtil : ShapeUtil
 
         using var paint = MakeStrokePaint(shape.Style, zoom);
 
-        var startX = (float)arrow.Waypoints[0][0];
-        var startY = (float)arrow.Waypoints[0][1];
-        var endX = (float)arrow.Waypoints[^1][0];
-        var endY = (float)arrow.Waypoints[^1][1];
+        var start = arrow.Waypoints[0];
+        var end = arrow.Waypoints[^1];
 
         // Draw line segments
         using var path = new SKPath();
-        path.MoveTo(startX, startY);
+        path.MoveTo(start);
 
         if (arrow.Waypoints.Count == 2)
         {
-            path.LineTo(endX, endY);
+            path.LineTo(end);
         }
         else
         {
             for (int i = 1; i < arrow.Waypoints.Count; i++)
-            {
-                var pt = arrow.Waypoints[i];
-                path.LineTo((float)pt[0], (float)pt[1]);
-            }
+                path.LineTo(arrow.Waypoints[i]);
         }
 
         canvas.DrawPath(path, paint);
 
         // Draw arrowhead
-        DrawArrowhead(canvas, endX, endY, startX, startY, paint, zoom);
+        DrawArrowhead(canvas, end.X, end.Y, start.X, start.Y, paint, zoom);
 
         // Draw endpoint dots
         using var dotPaint = new SKPaint
@@ -81,40 +76,27 @@ public class ArrowShapeUtil : ShapeUtil
         };
         float dotRadius = 4f / zoom;
 
-        // Check if endpoints are bound (green = bound, blue = unbound)
-        bool startBound = IsEndpointBound(shape.Id, "start");
-        bool endBound = IsEndpointBound(shape.Id, "end");
+        bool startBound = IsEndpointBound(shape.Id, ArrowEndpoint.Start);
+        bool endBound = IsEndpointBound(shape.Id, ArrowEndpoint.End);
 
         using var boundPaint = new SKPaint
         {
-            Color = new SKColor(0x22, 0xC5, 0x5E), // green
+            Color = new SKColor(0x22, 0xC5, 0x5E),
             Style = SKPaintStyle.Fill,
             IsAntialias = true,
         };
 
-        canvas.DrawCircle(startX, startY, dotRadius, startBound ? boundPaint : dotPaint);
-        canvas.DrawCircle(endX, endY, dotRadius, endBound ? boundPaint : dotPaint);
-
-        // Draw binding target highlight if bound
-        if (startBound)
-            DrawBindingHighlight(canvas, shape.Id, "start", zoom);
-        if (endBound)
-            DrawBindingHighlight(canvas, shape.Id, "end", zoom);
+        canvas.DrawCircle(start, dotRadius, startBound ? boundPaint : dotPaint);
+        canvas.DrawCircle(end, dotRadius, endBound ? boundPaint : dotPaint);
 
         canvas.Restore();
     }
 
-    private bool IsEndpointBound(string arrowId, string endpoint)
+    private bool IsEndpointBound(string arrowId, ArrowEndpoint endpoint)
     {
         if (Store == null) return false;
-        var bindingId = $"binding:{arrowId}:{endpoint}";
+        var bindingId = $"binding:{arrowId}:{endpoint.ToValue()}";
         return Store.Get(bindingId) != null;
-    }
-
-    private void DrawBindingHighlight(SKCanvas canvas, string arrowId, string endpoint, float zoom)
-    {
-        // Green dot at endpoint is sufficient visual feedback
-        // Full shape highlight would require coordinate transformation
     }
 
     private static void DrawArrowhead(SKCanvas canvas, float tipX, float tipY,
@@ -149,9 +131,8 @@ public class ArrowShapeUtil : ShapeUtil
 
         foreach (var pt in arrow.Waypoints)
         {
-            if (pt.Count < 2) continue;
-            float px = (float)(shape.X + pt[0]);
-            float py = (float)(shape.Y + pt[1]);
+            float px = (float)shape.X + pt.X;
+            float py = (float)shape.Y + pt.Y;
             minX = Math.Min(minX, px);
             minY = Math.Min(minY, py);
             maxX = Math.Max(maxX, px);

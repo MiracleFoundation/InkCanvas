@@ -17,7 +17,6 @@ public partial class TldrawCanvas : IDisposable
     [Parameter]
     public Core.Editor.Editor? Editor { get; set; }
 
-    // ── Touch gesture tracking ──────────────────────────────
     private readonly Dictionary<long, SKPoint> _activePointers = new();
     private double _pinchStartDistance;
     private SKPoint _pinchStartCenter;
@@ -87,7 +86,6 @@ public partial class TldrawCanvas : IDisposable
         _editor.Render(args.Surface.Canvas, args.Info);
     }
 
-    // ── Pointer events with touch gesture support ───────────
 
     private void OnPointerDown(PointerEventArgs e)
     {
@@ -140,7 +138,6 @@ public partial class TldrawCanvas : IDisposable
                 e.ShiftKey, e.AltKey, e.CtrlKey);
     }
 
-    // ── Pinch-to-zoom gesture ───────────────────────────────
 
     private void StartPinch()
     {
@@ -190,7 +187,6 @@ public partial class TldrawCanvas : IDisposable
         return new SKPoint((a.X + b.X) / 2, (a.Y + b.Y) / 2);
     }
 
-    // ── Keyboard events ─────────────────────────────────────
 
     private void OnKeyDown(KeyboardEventArgs e)
     {

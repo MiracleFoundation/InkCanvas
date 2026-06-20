@@ -21,7 +21,6 @@ public class SelectionManager
     /// <summary>Number of selected shapes.</summary>
     public int Count => _selectedIds.Count;
 
-    // ── Selection operations ────────────────────────────────
 
     public void Select(string id)
     {
@@ -71,7 +70,6 @@ public class SelectionManager
             .ToList();
     }
 
-    // ── Handle types ────────────────────────────────────────
 
     /// <summary>Resize handle identifiers.</summary>
     public enum HandleType
@@ -83,7 +81,6 @@ public class SelectionManager
         None
     }
 
-    // ── Handle hit-testing ──────────────────────────────────
 
     /// <summary>Check if a world point hits any resize/rotation handle.
     /// Returns the handle type, or None.</summary>
@@ -154,7 +151,6 @@ public class SelectionManager
         return new SKRect(minX, minY, maxX, maxY);
     }
 
-    // ── Rendering ───────────────────────────────────────────
 
     /// <summary>Render selection outlines and handles for all selected shapes.</summary>
     public void RenderSelection(SKCanvas canvas, float zoom, ShapeUtilRegistry shapeUtils)
@@ -231,7 +227,6 @@ public class SelectionManager
         };
     }
 
-    // ── Shape cache ─────────────────────────────────────────
 
     private readonly Dictionary<string, TLShapeRecord> _shapeCache = new();
 

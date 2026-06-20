@@ -1,5 +1,6 @@
 @using Tldraw.Blazor.Core.Editor
 @using Tldraw.Blazor.Core.Store
+@using Tldraw.Blazor.Core
 
 @if (_selectedShapes.Count > 0)
 {
@@ -21,9 +22,9 @@
         <div class="style-section">
             <label>Fill</label>
             <div class="color-row">
-                <button class="color-swatch @(CurrentFill == "none" ? "active" : "")"
+                <button class="color-swatch @(CurrentFill == FillConstants.None ? "active" : "")"
                         style="background: #fff; border: 2px dashed #ccc;"
-                        @onclick='() => SetFill("none")'
+                        @onclick='() => SetFill(FillConstants.None)'
                         title="No fill">
                     <span style="font-size: 10px; color: #999;">✕</span>
                 </button>
@@ -55,12 +56,12 @@
         <div class="style-section">
             <label>Dash</label>
             <div class="dash-row">
-                <button class="dash-btn @(CurrentDash == "solid" ? "active" : "")"
-                        @onclick='() => SetDash("solid")'>━</button>
-                <button class="dash-btn @(CurrentDash == "dashed" ? "active" : "")"
-                        @onclick='() => SetDash("dashed")'>┅</button>
-                <button class="dash-btn @(CurrentDash == "dotted" ? "active" : "")"
-                        @onclick='() => SetDash("dotted")'>┈</button>
+                <button class="dash-btn @(CurrentDash == DashPattern.Solid ? "active" : "")"
+                        @onclick='() => SetDash(DashPattern.Solid)'>━</button>
+                <button class="dash-btn @(CurrentDash == DashPattern.Dashed ? "active" : "")"
+                        @onclick='() => SetDash(DashPattern.Dashed)'>┅</button>
+                <button class="dash-btn @(CurrentDash == DashPattern.Dotted ? "active" : "")"
+                        @onclick='() => SetDash(DashPattern.Dotted)'>┈</button>
             </div>
         </div>
 
@@ -104,12 +105,12 @@
     };
 
     private string CurrentColor => _selectedShapes.FirstOrDefault()?.Style.Color ?? "#1e1e1e";
-    private string CurrentFill => _selectedShapes.FirstOrDefault()?.Style.Fill ?? "none";
-    private double CurrentStrokeWidth => _selectedShapes.FirstOrDefault()?.Style.StrokeWidth ?? 2;
-    private double CurrentOpacity => _selectedShapes.FirstOrDefault()?.Style.Opacity ?? 1;
-    private string CurrentDash => _selectedShapes.FirstOrDefault()?.Style.DashPattern ?? "solid";
-    private double CurrentBorderRadius => _selectedShapes.FirstOrDefault()?.Style.BorderRadius ?? 0;
-    private double CurrentFontSize => _selectedShapes.FirstOrDefault()?.Style.FontSize ?? 16;
+    private string CurrentFill => _selectedShapes.FirstOrDefault()?.Style.Fill ?? FillConstants.None;
+    private double CurrentStrokeWidth => (double)(_selectedShapes.FirstOrDefault()?.Style.StrokeWidth ?? new PositiveDouble(2));
+    private double CurrentOpacity => (double)(_selectedShapes.FirstOrDefault()?.Style.Opacity ?? UnitInterval.One);
+    private DashPattern CurrentDash => _selectedShapes.FirstOrDefault()?.Style.DashPattern ?? DashPattern.Solid;
+    private double CurrentBorderRadius => (double)(_selectedShapes.FirstOrDefault()?.Style.BorderRadius ?? NonNegativeDouble.Zero);
+    private double CurrentFontSize => (double)(_selectedShapes.FirstOrDefault()?.Style.FontSize ?? new PositiveDouble(16));
     private bool HasGeoShapes => _selectedShapes.Any(s => s.ShapeType == "geo");
     private bool HasTextShapes => _selectedShapes.Any(s => s.ShapeType is "text" or "note");
 
@@ -141,7 +142,7 @@
     {
         Editor.PushUndo();
         foreach (var shape in _selectedShapes)
-            shape.Style.Color = color;
+            shape.Style.Color = new HexColor(color);
         Editor.Invalidate();
     }
 
@@ -149,7 +150,7 @@
     {
         Editor.PushUndo();
         foreach (var shape in _selectedShapes)
-            shape.Style.Fill = fill;
+            shape.Style.Fill = new HexColor(fill);
         Editor.Invalidate();
     }
 
@@ -159,7 +160,7 @@
         {
             Editor.PushUndo();
             foreach (var shape in _selectedShapes)
-                shape.Style.StrokeWidth = val;
+                shape.Style.StrokeWidth = new PositiveDouble(val);
             Editor.Invalidate();
         }
     }
@@ -170,12 +171,12 @@
         {
             Editor.PushUndo();
             foreach (var shape in _selectedShapes)
-                shape.Style.Opacity = val;
+                shape.Style.Opacity = new UnitInterval(val);
             Editor.Invalidate();
         }
     }
 
-    private void SetDash(string dash)
+    private void SetDash(DashPattern dash)
     {
         Editor.PushUndo();
         foreach (var shape in _selectedShapes)
@@ -189,7 +190,7 @@
         {
             Editor.PushUndo();
             foreach (var shape in _selectedShapes)
-                shape.Style.BorderRadius = val;
+                shape.Style.BorderRadius = new NonNegativeDouble(val);
             Editor.Invalidate();
         }
     }
@@ -201,9 +202,9 @@
             Editor.PushUndo();
             foreach (var shape in _selectedShapes)
             {
-                shape.Style.FontSize = val;
+                shape.Style.FontSize = new PositiveDouble(val);
                 if (shape.Props is TLTextProps textProps)
-                    textProps.FontSize = val;
+                    textProps.FontSize = new PositiveDouble(val);
             }
             Editor.Invalidate();
         }

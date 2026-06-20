@@ -19,11 +19,11 @@ public class GeoShapeUtil : ShapeUtil
         Height = 100,
         Style = new TLShapeStyle
         {
-            Color = "#1e1e1e",
-            Fill = "#E8F5E9", // light green
-            StrokeWidth = 2,
+            Color = new("#1e1e1e"),
+            Fill = new("#E8F5E9"),
+            StrokeWidth = new(2),
         },
-        Props = new TLGeoProps { GeoType = "rectangle" }
+        Props = new TLGeoProps { GeoType = GeoVariant.Rectangle }
     };
 
     public override void Render(SKCanvas canvas, TLShapeRecord shape, float zoom)
@@ -47,23 +47,23 @@ public class GeoShapeUtil : ShapeUtil
 
         switch (geo.GeoType)
         {
-            case "rectangle":
+            case GeoVariant.Rectangle:
                 DrawRoundedRect(canvas, rect, fillPaint, strokePaint, shape.Style);
                 break;
-            case "ellipse":
+            case GeoVariant.Ellipse:
                 canvas.DrawOval(rect, fillPaint);
                 canvas.DrawOval(rect, strokePaint);
                 break;
-            case "diamond":
+            case GeoVariant.Diamond:
                 DrawDiamond(canvas, rect, fillPaint, strokePaint);
                 break;
-            case "star":
+            case GeoVariant.Star:
                 DrawStar(canvas, rect, fillPaint, strokePaint);
                 break;
-            case "hexagon":
+            case GeoVariant.Hexagon:
                 DrawPolygon(canvas, rect, fillPaint, strokePaint, 6);
                 break;
-            case "triangle":
+            case GeoVariant.Triangle:
                 DrawPolygon(canvas, rect, fillPaint, strokePaint, 3);
                 break;
             default:
@@ -71,7 +71,6 @@ public class GeoShapeUtil : ShapeUtil
                 break;
         }
 
-        // Draw text if present
         if (!string.IsNullOrEmpty(geo.Text))
             DrawCenteredText(canvas, rect, geo.Text, shape.Style, zoom);
 
@@ -81,8 +80,6 @@ public class GeoShapeUtil : ShapeUtil
     public override SKRect GetBounds(TLShapeRecord shape) =>
         new((float)shape.X, (float)shape.Y,
             (float)(shape.X + shape.Width), (float)(shape.Y + shape.Height));
-
-    // ── Drawing helpers ─────────────────────────────────────
 
     private static void DrawRoundedRect(SKCanvas canvas, SKRect rect, SKPaint fill, SKPaint stroke, TLShapeStyle style)
     {

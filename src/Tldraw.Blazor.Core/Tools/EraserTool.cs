@@ -1,4 +1,5 @@
 using SkiaSharp;
+using Tldraw.Blazor.Core;
 using Tldraw.Blazor.Core.Editor;
 using Tldraw.Blazor.Core.Store;
 using Editor = Tldraw.Blazor.Core.Editor.Editor;
@@ -11,7 +12,7 @@ namespace Tldraw.Blazor.Core.Tools;
 /// </summary>
 public class EraserTool : StateNode
 {
-    public override string Id => "eraser";
+    public override string Id => ToolId.Eraser.ToValue();
 
     /// <summary>Shapes queued for deletion (erased during drag).</summary>
     public HashSet<string> ErasedIds { get; } = new();
@@ -28,7 +29,6 @@ public class EraserTool : StateNode
         Transition("idle");
     }
 
-    // ── Idle State ──────────────────────────────────────────
 
     public class IdleState : StateNode
     {
@@ -48,7 +48,7 @@ public class EraserTool : StateNode
         public override void OnKeyDown(KeyEvent e)
         {
             if (e.Key == "Escape")
-                Editor.SetActiveTool("select");
+                Editor.SetActiveTool(ToolId.Select);
         }
 
         private void EraseAtPoint(double worldX, double worldY)
@@ -74,7 +74,6 @@ public class EraserTool : StateNode
         }
     }
 
-    // ── Erasing State ───────────────────────────────────────
 
     public class ErasingState : StateNode
     {

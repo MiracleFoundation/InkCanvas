@@ -26,7 +26,6 @@ public abstract class StateNode
     /// <summary>The root tool (topmost parent).</summary>
     public StateNode Root => Parent?.Root ?? this;
 
-    // ── Lifecycle ───────────────────────────────────────────
 
     /// <summary>Called when this state becomes active.</summary>
     public virtual void OnEnter() { }
@@ -34,7 +33,6 @@ public abstract class StateNode
     /// <summary>Called when this state is exited.</summary>
     public virtual void OnExit() { }
 
-    // ── Input handlers ──────────────────────────────────────
 
     public virtual void OnPointerDown(PointerEvent e) =>
         ActiveChild?.OnPointerDown(e);
@@ -48,13 +46,11 @@ public abstract class StateNode
     public virtual void OnKeyDown(KeyEvent e) =>
         ActiveChild?.OnKeyDown(e);
 
-    // ── Rendering ───────────────────────────────────────────
 
     /// <summary>Render overlays for this state (selection, brush rect, etc.).</summary>
     public virtual void Render(SKCanvas canvas, float zoom) =>
         ActiveChild?.Render(canvas, zoom);
 
-    // ── State transitions ───────────────────────────────────
 
     /// <summary>Register a child state.</summary>
     protected void RegisterChild(StateNode child)

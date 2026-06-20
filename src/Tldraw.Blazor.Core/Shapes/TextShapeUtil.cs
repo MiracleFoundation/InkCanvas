@@ -19,12 +19,12 @@ public class TextShapeUtil : ShapeUtil
         Height = 40,
         Style = new TLShapeStyle
         {
-            Color = "#1e1e1e",
-            Fill = "none",
-            StrokeWidth = 0,
-            FontSize = 24,
+            Color = new("#1e1e1e"),
+            Fill = new(FillConstants.None),
+            StrokeWidth = new(0),
+            FontSize = new(24),
         },
-        Props = new TLTextProps { Text = "Text", FontSize = 24 }
+        Props = new TLTextProps { Text = string.Empty, FontSize = new(24) }
     };
 
     public override void Render(SKCanvas canvas, TLShapeRecord shape, float zoom)
@@ -45,7 +45,7 @@ public class TextShapeUtil : ShapeUtil
 
         var lines = text.Text.Split('\n');
         float lineHeight = font.Spacing;
-        float y = lineHeight; // first line baseline
+        float y = lineHeight;
 
         float maxWidth = 0;
         foreach (var line in lines)
@@ -54,7 +54,6 @@ public class TextShapeUtil : ShapeUtil
             if (w > maxWidth) maxWidth = w;
         }
 
-        // Update shape width/height to fit text
         shape.Width = maxWidth + 8;
         shape.Height = lineHeight * lines.Length + 4;
 
@@ -62,8 +61,8 @@ public class TextShapeUtil : ShapeUtil
         {
             float x = text.TextAlign switch
             {
-                "center" => (float)shape.Width / 2 - font.MeasureText(line) / 2,
-                "right" => (float)shape.Width - font.MeasureText(line),
+                TextAlign.Center => (float)shape.Width / 2 - font.MeasureText(line) / 2,
+                TextAlign.Right => (float)shape.Width - font.MeasureText(line),
                 _ => 0
             };
             canvas.DrawText(line, x, y, SKTextAlign.Left, font, paint);

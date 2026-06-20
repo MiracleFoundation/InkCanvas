@@ -19,16 +19,16 @@ public class LineShapeUtil : ShapeUtil
         Height = 0,
         Style = new TLShapeStyle
         {
-            Color = "#1e1e1e",
-            Fill = "none",
-            StrokeWidth = 2,
+            Color = new("#1e1e1e"),
+            Fill = new(FillConstants.None),
+            StrokeWidth = new(2),
         },
         Props = new TLLineProps
         {
-            Points = new List<List<double>>
+            Points = new List<SKPoint>
             {
-                new() { 0, 0 },
-                new() { 200, 0 }
+                new(0, 0),
+                new(200, 0)
             }
         }
     };
@@ -43,14 +43,9 @@ public class LineShapeUtil : ShapeUtil
         using var paint = MakeStrokePaint(shape.Style, zoom);
 
         using var path = new SKPath();
-        path.MoveTo((float)line.Points[0][0], (float)line.Points[0][1]);
-
+        path.MoveTo(line.Points[0]);
         for (int i = 1; i < line.Points.Count; i++)
-        {
-            var pt = line.Points[i];
-            if (pt.Count >= 2)
-                path.LineTo((float)pt[0], (float)pt[1]);
-        }
+            path.LineTo(line.Points[i]);
 
         canvas.DrawPath(path, paint);
         canvas.Restore();
@@ -66,9 +61,8 @@ public class LineShapeUtil : ShapeUtil
 
         foreach (var pt in line.Points)
         {
-            if (pt.Count < 2) continue;
-            float px = (float)(shape.X + pt[0]);
-            float py = (float)(shape.Y + pt[1]);
+            float px = (float)shape.X + pt.X;
+            float py = (float)shape.Y + pt.Y;
             minX = Math.Min(minX, px);
             minY = Math.Min(minY, py);
             maxX = Math.Max(maxX, px);

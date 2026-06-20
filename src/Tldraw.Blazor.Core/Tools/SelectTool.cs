@@ -1,4 +1,5 @@
 using SkiaSharp;
+using Tldraw.Blazor.Core;
 using Tldraw.Blazor.Core.Editor;
 using Tldraw.Blazor.Core.Store;
 using Editor = Tldraw.Blazor.Core.Editor.Editor;
@@ -11,7 +12,7 @@ namespace Tldraw.Blazor.Core.Tools;
 /// </summary>
 public class SelectTool : StateNode
 {
-    public override string Id => "select";
+    public override string Id => ToolId.Select.ToValue();
 
     public SelectTool()
     {
@@ -29,7 +30,6 @@ public class SelectTool : StateNode
         Transition("idle");
     }
 
-    // ── Idle State ──────────────────────────────────────────
 
     public class IdleState : StateNode
     {
@@ -160,7 +160,6 @@ public class SelectTool : StateNode
         }
     }
 
-    // ── Pointing State ──────────────────────────────────────
 
     public class PointingState : StateNode
     {
@@ -200,7 +199,6 @@ public class SelectTool : StateNode
         }
     }
 
-    // ── Dragging State (move shapes) ────────────────────────
 
     public class DraggingState : StateNode
     {
@@ -252,7 +250,6 @@ public class SelectTool : StateNode
         }
     }
 
-    // ── Brush (Rubber-band) State ───────────────────────────
 
     public class BrushState : StateNode
     {
@@ -329,7 +326,6 @@ public class SelectTool : StateNode
             a.Top < b.Bottom && a.Bottom > b.Top;
     }
 
-    // ── Resizing State ──────────────────────────────────────
 
     public class ResizingState : StateNode
     {
@@ -502,7 +498,6 @@ public class SelectTool : StateNode
         }
     }
 
-    // ── Rotating State ──────────────────────────────────────
 
     public class RotatingState : StateNode
     {
@@ -581,7 +576,6 @@ public class SelectTool : StateNode
         }
     }
 
-    // ── Arrow Editing State ─────────────────────────────────
 
     public class ArrowEditingState : StateNode
     {
@@ -589,7 +583,7 @@ public class SelectTool : StateNode
         public override string Id => "arrowEditing";
 
         private string? _arrowId;
-        private string? _endpoint; // "start" or "end"
+        private ArrowEndpoint? _endpoint;
         private bool _isBound;
 
         public ArrowEditingState(SelectTool tool) => _tool = tool;
@@ -598,7 +592,7 @@ public class SelectTool : StateNode
         {
             _arrowId = _tool.EditingArrowId;
             _endpoint = _tool.EditingArrowEndpoint;
-            _isBound = _arrowId != null && Editor.GetArrowBinding(_arrowId, _endpoint!) != null;
+            _isBound = _arrowId != null && _endpoint.HasValue && Editor.GetArrowBinding(_arrowId, _endpoint.Value) != null;
 
             Editor.PushUndo();
         }
@@ -611,7 +605,7 @@ public class SelectTool : StateNode
             if (arrow?.Props is not TLArrowProps arrowProps) return;
 
             // Move the endpoint to follow the pointer
-            if (_endpoint == "start")
+            if (_endpoint == ArrowEndpoint.Start)
             {
                 // Move arrow origin
                 var dx = e.WorldX - arrow.X;
@@ -622,27 +616,30 @@ public class SelectTool : StateNode
                 // Adjust all waypoints
                 for (int i = 0; i < arrowProps.Waypoints.Count; i++)
                 {
-                    arrowProps.Waypoints[i][0] -= dx;
-                    arrowProps.Waypoints[i][1] -= dy;
+                    var pt = arrowProps.Waypoints[i];
+                    arrowProps.Waypoints[i] = new SKPoint(
+                        (float)(pt.X - dx),
+                        (float)(pt.Y - dy));
                 }
             }
-            else // "end"
+            else // end
             {
                 // Move last waypoint
                 if (arrowProps.Waypoints.Count >= 2)
                 {
-                    arrowProps.Waypoints[^1][0] = e.WorldX - arrow.X;
-                    arrowProps.Waypoints[^1][1] = e.WorldY - arrow.Y;
+                    arrowProps.Waypoints[^1] = new SKPoint(
+                        (float)(e.WorldX - arrow.X),
+                        (float)(e.WorldY - arrow.Y));
                 }
             }
 
             // Try to bind to nearby shape
-            var binding = Editor.TryBindArrowEndpoint(_arrowId, _endpoint, e.WorldX, e.WorldY);
+            var binding = Editor.TryBindArrowEndpoint(_arrowId, _endpoint.Value, e.WorldX, e.WorldY);
             _isBound = binding != null;
 
             // Remove old binding if endpoint moved away
             if (binding == null)
-                Editor.UnbindArrowEndpoint(_arrowId, _endpoint);
+                Editor.UnbindArrowEndpoint(_arrowId, _endpoint.Value);
 
             Editor.Invalidate();
         }
@@ -652,7 +649,7 @@ public class SelectTool : StateNode
             if (_arrowId != null && _endpoint != null)
             {
                 // Final binding attempt
-                Editor.TryBindArrowEndpoint(_arrowId, _endpoint, e.WorldX, e.WorldY);
+                Editor.TryBindArrowEndpoint(_arrowId, _endpoint.Value, e.WorldX, e.WorldY);
             }
 
             _arrowId = null;
@@ -692,7 +689,6 @@ public class SelectTool : StateNode
         }
     }
 
-    // ── Shared state ────────────────────────────────────────
 
     internal string? PointedShapeId;
     internal SKPointd PointerStartWorld;
@@ -710,7 +706,7 @@ public class SelectTool : StateNode
 
     // Arrow editing state
     internal string? EditingArrowId;
-    internal string? EditingArrowEndpoint;
+    internal ArrowEndpoint? EditingArrowEndpoint;
 
     /// <summary>Save current bounds of all selected shapes for resize calculations.</summary>
     internal void SaveShapeBounds(Tldraw.Blazor.Core.Editor.Editor editor)

@@ -19,9 +19,9 @@ public class FrameShapeUtil : ShapeUtil
         Height = 300,
         Style = new TLShapeStyle
         {
-            Color = "#888888",
-            Fill = "#FFFFFF",
-            StrokeWidth = 1.5,
+            Color = new("#888888"),
+            Fill = new("#FFFFFF"),
+            StrokeWidth = new(1.5),
         },
         Props = new TLFrameProps { Name = "Frame" }
     };

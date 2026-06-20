@@ -1,4 +1,5 @@
 using SkiaSharp;
+using Tldraw.Blazor.Core;
 using Tldraw.Blazor.Core.Store;
 using Editor = Tldraw.Blazor.Core.Editor.Editor;
 
@@ -10,7 +11,7 @@ namespace Tldraw.Blazor.Core.Tools;
 /// </summary>
 public class TextTool : StateNode
 {
-    public override string Id => "text";
+    public override string Id => ToolId.Text.ToValue();
 
     /// <summary>ID of the shape currently being edited, if any.</summary>
     public string? EditingShapeId { get; set; }
@@ -27,7 +28,6 @@ public class TextTool : StateNode
         Transition("idle");
     }
 
-    // ── Idle State ──────────────────────────────────────────
 
     public class IdleState : StateNode
     {
@@ -48,16 +48,16 @@ public class TextTool : StateNode
                 Height = 40,
                 Style = new TLShapeStyle
                 {
-                    Color = "#1e1e1e",
-                    Fill = "none",
-                    StrokeWidth = 0,
-                    FontSize = 24,
+                    Color = new("#1e1e1e"),
+                    Fill = new(FillConstants.None),
+                    StrokeWidth = new(0),
+                    FontSize = new(24),
                 },
                 Props = new TLTextProps
                 {
-                    Text = "",
-                    FontSize = 24,
-                    TextAlign = "left",
+                    Text = string.Empty,
+                    FontSize = new(24),
+                    TextAlign = TextAlign.Left,
                 }
             };
 
@@ -73,11 +73,10 @@ public class TextTool : StateNode
         public override void OnKeyDown(KeyEvent e)
         {
             if (e.Key == "Escape")
-                Editor.SetActiveTool("select");
+                Editor.SetActiveTool(ToolId.Select);
         }
     }
 
-    // ── Editing State ───────────────────────────────────────
 
     public class EditingState : StateNode
     {

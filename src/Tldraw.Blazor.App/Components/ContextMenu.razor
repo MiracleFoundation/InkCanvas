@@ -104,14 +104,14 @@
             case "sendBack": Editor.SendToBack(); break;
             case "bringForward": Editor.BringForward(); break;
             case "sendBackward": Editor.SendBackward(); break;
-            case "alignLeft": Editor.Align(Editor.AlignType.Left); break;
-            case "alignCenter": Editor.Align(Editor.AlignType.Center); break;
-            case "alignRight": Editor.Align(Editor.AlignType.Right); break;
-            case "alignTop": Editor.Align(Editor.AlignType.Top); break;
-            case "alignMiddle": Editor.Align(Editor.AlignType.Middle); break;
-            case "alignBottom": Editor.Align(Editor.AlignType.Bottom); break;
-            case "distH": Editor.Distribute(Editor.DistributeType.Horizontal); break;
-            case "distV": Editor.Distribute(Editor.DistributeType.Vertical); break;
+            case "alignLeft": Editor.Align(AlignDirection.Left); break;
+            case "alignCenter": Editor.Align(AlignDirection.Center); break;
+            case "alignRight": Editor.Align(AlignDirection.Right); break;
+            case "alignTop": Editor.Align(AlignDirection.Top); break;
+            case "alignMiddle": Editor.Align(AlignDirection.Middle); break;
+            case "alignBottom": Editor.Align(AlignDirection.Bottom); break;
+            case "distH": Editor.Distribute(DistributeDirection.Horizontal); break;
+            case "distV": Editor.Distribute(DistributeDirection.Vertical); break;
             case "group": Editor.GroupSelected(); break;
             case "ungroup": Editor.UngroupSelected(); break;
         }

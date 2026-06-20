@@ -11,7 +11,6 @@ public class TLStore
     /// <summary>Fired when records change. Carries the list of changes.</summary>
     public event Action<IReadOnlyList<TLStoreChange>>? Changed;
 
-    // ── CRUD ────────────────────────────────────────────────
 
     /// <summary>Insert or update a record.</summary>
     public void Put(TLRecord record)
@@ -85,7 +84,6 @@ public class TLStore
     /// <summary>Total record count.</summary>
     public int Count => _records.Count;
 
-    // ── Snapshot ────────────────────────────────────────────
 
     /// <summary>Create a serializable snapshot of the entire store.</summary>
     public TLStoreSnapshot GetSnapshot() =>
@@ -105,37 +103,7 @@ public class TLStore
             OnChanged(changes);
     }
 
-    // ── Events ──────────────────────────────────────────────
 
     private void OnChanged(IEnumerable<TLStoreChange> changes) =>
         Changed?.Invoke(changes.ToList());
-}
-
-/// <summary>Event data for a single store change.</summary>
-public record TLStoreChange(TLStoreChange.ChangeType Type, string RecordId, TLRecord? Record)
-{
-    public enum ChangeType { Put, Remove }
-}
-
-/// <summary>Serializable snapshot of the entire store.</summary>
-public class TLStoreSnapshot
-{
-    public List<TLRecord> Records { get; set; } = new();
-
-    /// <summary>Serialize to JSON.</summary>
-    public string ToJson() =>
-        System.Text.Json.JsonSerializer.Serialize(this, SnapshotJsonOptions.Default);
-
-    /// <summary>Deserialize from JSON.</summary>
-    public static TLStoreSnapshot? FromJson(string json) =>
-        System.Text.Json.JsonSerializer.Deserialize<TLStoreSnapshot>(json, SnapshotJsonOptions.Default);
-}
-
-internal static class SnapshotJsonOptions
-{
-    public static readonly System.Text.Json.JsonSerializerOptions Default = new()
-    {
-        WriteIndented = true,
-        PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
-    };
 }

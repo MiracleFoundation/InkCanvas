@@ -21,11 +21,11 @@ public class NoteShapeUtil : ShapeUtil
         Height = DefaultSize,
         Style = new TLShapeStyle
         {
-            Color = "#1e1e1e",
-            Fill = "none",
-            StrokeWidth = 0,
+            Color = new("#1e1e1e"),
+            Fill = new(FillConstants.None),
+            StrokeWidth = new(0),
         },
-        Props = new TLNoteProps { Text = "", NoteColor = "#FFEB3B" }
+        Props = new TLNoteProps { Text = "", NoteColor = new("#FFEB3B") }
     };
 
     public override void Render(SKCanvas canvas, TLShapeRecord shape, float zoom)

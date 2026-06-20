@@ -19,9 +19,9 @@ public class DrawShapeUtil : ShapeUtil
         Height = 0,
         Style = new TLShapeStyle
         {
-            Color = "#1e1e1e",
-            Fill = "none",
-            StrokeWidth = 2.5,
+            Color = new("#1e1e1e"),
+            Fill = new(FillConstants.None),
+            StrokeWidth = new(2.5),
         },
         Props = new TLDrawProps()
     };
@@ -39,7 +39,6 @@ public class DrawShapeUtil : ShapeUtil
         foreach (var segment in draw.Segments)
         {
             if (segment.Count < 2) continue;
-
             using var path = CreateSmoothPath(segment);
             canvas.DrawPath(path, paint);
         }
@@ -47,63 +46,38 @@ public class DrawShapeUtil : ShapeUtil
         canvas.Restore();
     }
 
-    /// <summary>
-    /// Create a smooth SKPath from a flat point array using quadratic bezier curves.
-    /// Points are in [x1,y1,x2,y2,...] format.
-    /// </summary>
-    private static SKPath CreateSmoothPath(List<double> points)
+    /// <summary>Create a smooth SKPath from points using quadratic bezier curves.</summary>
+    private static SKPath CreateSmoothPath(List<SKPoint> points)
     {
         var path = new SKPath();
-
-        if (points.Count < 4)
+        if (points.Count < 2)
         {
-            // Just 1 point — nothing to draw
-            if (points.Count >= 2)
-                path.MoveTo((float)points[0], (float)points[1]);
+            if (points.Count == 1) path.MoveTo(points[0]);
             return path;
         }
 
-        float x0 = (float)points[0], y0 = (float)points[1];
-        path.MoveTo(x0, y0);
+        path.MoveTo(points[0]);
 
-        if (points.Count == 4)
+        if (points.Count == 2)
         {
-            // Just 2 points — straight line
-            path.LineTo((float)points[2], (float)points[3]);
+            path.LineTo(points[1]);
             return path;
         }
 
-        // For 3+ points, use quadratic bezier through midpoints
-        // This creates smooth curves that pass through the midpoints between consecutive points
-        float prevX = x0, prevY = y0;
-
-        for (int i = 2; i < points.Count - 2; i += 2)
+        for (int i = 1; i < points.Count - 1; i++)
         {
-            float currX = (float)points[i];
-            float currY = (float)points[i + 1];
-
-            // Midpoint between previous and current
-            float midX = (prevX + currX) / 2;
-            float midY = (prevY + currY) / 2;
-
-            // Quadratic bezier: control point = current, end = midpoint
-            path.QuadTo(prevX, prevY, midX, midY);
-
-            prevX = currX;
-            prevY = currY;
+            var prev = points[i - 1];
+            var curr = points[i];
+            path.QuadTo(prev.X, prev.Y, (prev.X + curr.X) / 2, (prev.Y + curr.Y) / 2);
         }
 
-        // Last segment — line to the final point
-        float lastX = (float)points[^2];
-        float lastY = (float)points[^1];
-        path.LineTo(lastX, lastY);
-
+        path.LineTo(points[^1]);
         return path;
     }
 
     public override SKRect GetBounds(TLShapeRecord shape)
     {
-        if (shape.Props is not TLDrawProps draw)
+        if (shape.Props is not TLDrawProps draw || draw.Segments.Count == 0)
             return new SKRect((float)shape.X, (float)shape.Y, (float)shape.X, (float)shape.Y);
 
         float minX = float.MaxValue, minY = float.MaxValue;
@@ -111,10 +85,10 @@ public class DrawShapeUtil : ShapeUtil
 
         foreach (var segment in draw.Segments)
         {
-            for (int i = 0; i < segment.Count - 1; i += 2)
+            foreach (var pt in segment)
             {
-                float px = (float)(shape.X + segment[i]);
-                float py = (float)(shape.Y + segment[i + 1]);
+                float px = (float)shape.X + pt.X;
+                float py = (float)shape.Y + pt.Y;
                 minX = Math.Min(minX, px);
                 minY = Math.Min(minY, py);
                 maxX = Math.Max(maxX, px);

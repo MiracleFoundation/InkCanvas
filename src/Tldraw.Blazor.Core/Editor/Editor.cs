@@ -2,6 +2,7 @@ using SkiaSharp;
 using Tldraw.Blazor.Core.Shapes;
 using Tldraw.Blazor.Core.Store;
 using Tldraw.Blazor.Core.Tools;
+using Tldraw.Blazor.Core;
 
 namespace Tldraw.Blazor.Core.Editor;
 
@@ -97,11 +98,11 @@ public class Editor
         RegisterTool(new ArrowTool());
 
         // Wire ArrowShapeUtil with Store reference for binding checks
-        if (ShapeUtils.Get("arrow") is Shapes.ArrowShapeUtil arrowUtil)
+        if (ShapeUtils.Get(ShapeType.Arrow.ToValue()) is Shapes.ArrowShapeUtil arrowUtil)
             arrowUtil.Store = Store;
 
         // Activate select tool by default
-        SetActiveTool("select");
+        SetActiveTool(ToolId.Select);
     }
 
     /// <summary>Register a tool and wire up its Editor reference.</summary>
@@ -114,9 +115,9 @@ public class Editor
     }
 
     /// <summary>Switch to a tool by ID.</summary>
-    public void SetActiveTool(string toolId)
+    public void SetActiveTool(ToolId toolId)
     {
-        if (!_tools.TryGetValue(toolId, out var tool))
+        if (!_tools.TryGetValue(toolId.ToValue(), out var tool))
             return;
 
         if (ActiveTool == tool) return;
@@ -125,6 +126,13 @@ public class Editor
         ActiveTool = tool;
         ActiveTool.OnEnter();
         Invalidate();
+    }
+
+    /// <summary>Switch to a tool by string ID (calls enum version).</summary>
+    public void SetActiveTool(string toolId)
+    {
+        if (Enum.TryParse<ToolId>(toolId, true, out var toolEnum))
+            SetActiveTool(toolEnum);
     }
 
     /// <summary>Get a tool by ID.</summary>
@@ -141,7 +149,6 @@ public class Editor
         Invalidate();
     }
 
-    // ── Shape helpers ───────────────────────────────────────
 
     /// <summary>Create a shape at the given world position and add it to the store.</summary>
     public TLShapeRecord? CreateShape(string shapeType, double x, double y)
@@ -154,7 +161,6 @@ public class Editor
         return shape;
     }
 
-    // ── Undo / Redo ─────────────────────────────────────────
 
     /// <summary>Capture current state before making changes.</summary>
     public void PushUndo() => History.PushUndo(Store);
@@ -173,7 +179,6 @@ public class Editor
         Invalidate();
     }
 
-    // ── Clipboard ───────────────────────────────────────────
 
     public void Copy()
     {
@@ -231,7 +236,6 @@ public class Editor
         Invalidate();
     }
 
-    // ── Image loading ───────────────────────────────────────
 
     /// <summary>
     /// Create an image shape from a data URI.
@@ -266,7 +270,7 @@ public class Editor
             Y = y,
             Width = width > 0 ? width : 200,
             Height = height > 0 ? height : 200,
-            Style = new TLShapeStyle { Color = "#ccc", Fill = "none", StrokeWidth = 1 },
+            Style = new TLShapeStyle { Color = new("#ccc"), Fill = new(FillConstants.None), StrokeWidth = new(1) },
             Props = new TLImageProps { AssetId = assetId },
         };
 
@@ -278,7 +282,6 @@ public class Editor
         return shape;
     }
 
-    // ── Export ──────────────────────────────────────────────
 
     /// <summary>Export the entire canvas to a PNG image (raw pixel bytes).</summary>
     public byte[]? ExportToPng(int width = 1920, int height = 1080)
@@ -359,7 +362,7 @@ public class Editor
         {
             if (shape.Props is TLGeoProps geo)
             {
-                var fill = shape.Style.Fill == "none" ? "none" : shape.Style.Fill;
+                var fill = shape.Style.Fill == FillConstants.None ? FillConstants.None : shape.Style.Fill;
                 sb.AppendLine($"  <rect x=\"{shape.X}\" y=\"{shape.Y}\" width=\"{shape.Width}\" height=\"{shape.Height}\" fill=\"{fill}\" stroke=\"{shape.Style.Color}\" stroke-width=\"{shape.Style.StrokeWidth}\" rx=\"{shape.Style.BorderRadius}\"/>");
             }
             else if (shape.Props is TLTextProps text)
@@ -372,11 +375,8 @@ public class Editor
         return sb.ToString();
     }
 
-    // ── Alignment ───────────────────────────────────────────
 
-    public enum AlignType { Left, Center, Right, Top, Middle, Bottom }
-
-    public void Align(AlignType align)
+    public void Align(AlignDirection align)
     {
         var shapes = Selection.GetSelectedShapes(Store);
         if (shapes.Count < 2) return;
@@ -392,12 +392,12 @@ public class Editor
 
         float target = align switch
         {
-            AlignType.Left => bounds.Min(b => b.Left),
-            AlignType.Center => bounds.Average(b => b.MidX),
-            AlignType.Right => bounds.Max(b => b.Right),
-            AlignType.Top => bounds.Min(b => b.Top),
-            AlignType.Middle => bounds.Average(b => b.MidY),
-            AlignType.Bottom => bounds.Max(b => b.Bottom),
+            AlignDirection.Left => bounds.Min(b => b.Left),
+            AlignDirection.Center => bounds.Average(b => b.MidX),
+            AlignDirection.Right => bounds.Max(b => b.Right),
+            AlignDirection.Top => bounds.Min(b => b.Top),
+            AlignDirection.Middle => bounds.Average(b => b.MidY),
+            AlignDirection.Bottom => bounds.Max(b => b.Bottom),
             _ => 0
         };
 
@@ -408,30 +408,27 @@ public class Editor
 
             switch (align)
             {
-                case AlignType.Left: shape.X += target - b.Left; break;
-                case AlignType.Center: shape.X += target - b.MidX; break;
-                case AlignType.Right: shape.X += target - b.Right; break;
-                case AlignType.Top: shape.Y += target - b.Top; break;
-                case AlignType.Middle: shape.Y += target - b.MidY; break;
-                case AlignType.Bottom: shape.Y += target - b.Bottom; break;
+                case AlignDirection.Left: shape.X += target - b.Left; break;
+                case AlignDirection.Center: shape.X += target - b.MidX; break;
+                case AlignDirection.Right: shape.X += target - b.Right; break;
+                case AlignDirection.Top: shape.Y += target - b.Top; break;
+                case AlignDirection.Middle: shape.Y += target - b.MidY; break;
+                case AlignDirection.Bottom: shape.Y += target - b.Bottom; break;
             }
         }
 
         Invalidate();
     }
 
-    // ── Distribution ────────────────────────────────────────
 
-    public enum DistributeType { Horizontal, Vertical }
-
-    public void Distribute(DistributeType type)
+    public void Distribute(DistributeDirection type)
     {
         var shapes = Selection.GetSelectedShapes(Store);
         if (shapes.Count < 3) return;
 
         PushUndo();
 
-        if (type == DistributeType.Horizontal)
+        if (type == DistributeDirection.Horizontal)
         {
             var sorted = shapes.OrderBy(s => s.X).ToList();
             float left = (float)sorted.First().X;
@@ -465,7 +462,6 @@ public class Editor
         Invalidate();
     }
 
-    // ── Z-Ordering ──────────────────────────────────────────
 
     public void BringToFront()
     {
@@ -528,7 +524,6 @@ public class Editor
         Invalidate();
     }
 
-    // ── Grouping ────────────────────────────────────────────
 
     public void GroupSelected()
     {
@@ -540,7 +535,7 @@ public class Editor
         // Create a group shape
         var group = new TLShapeRecord
         {
-            ShapeType = "group",
+            ShapeType = ShapeType.Group.ToValue(),
             X = shapes.Min(s => s.X),
             Y = shapes.Min(s => s.Y),
             Width = shapes.Max(s => s.X + s.Width) - shapes.Min(s => s.X),
@@ -565,14 +560,14 @@ public class Editor
     public void UngroupSelected()
     {
         var shapes = Selection.GetSelectedShapes(Store);
-        var groups = shapes.Where(s => s.ShapeType == "group").ToList();
+        var groups = shapes.Where(s => s.ShapeType == ShapeType.Group.ToValue()).ToList();
         if (groups.Count == 0) return;
 
         PushUndo();
 
         Selection.ClearSelection();
 
-        foreach (var group in shapes.Where(s => s.ShapeType == "group").ToList())
+        foreach (var group in shapes.Where(s => s.ShapeType == ShapeType.Group.ToValue()).ToList())
         {
             if (group.Props is TLGroupProps groupProps)
             {
@@ -592,7 +587,6 @@ public class Editor
         Invalidate();
     }
 
-    // ── Arrow Bindings ──────────────────────────────────────
 
     /// <summary>Binding distance threshold in world units.</summary>
     public double BindingThreshold { get; set; } = 20;
@@ -601,7 +595,7 @@ public class Editor
     /// Try to bind an arrow endpoint to a nearby shape.
     /// Returns the binding record if successful, null otherwise.
     /// </summary>
-    public TLBindingRecord? TryBindArrowEndpoint(string arrowId, string endpoint, double worldX, double worldY)
+    public TLBindingRecord? TryBindArrowEndpoint(string arrowId, ArrowEndpoint endpoint, double worldX, double worldY)
     {
         var shapes = Store.GetPageShapes();
         var point = new SKPointd(worldX, worldY);
@@ -613,7 +607,7 @@ public class Editor
         foreach (var shape in shapes)
         {
             if (shape.Id == arrowId || shape.IsLocked || shape.IsHidden) continue;
-            if (shape.ShapeType == "arrow") continue; // Don't bind to other arrows
+            if (shape.ShapeType == ShapeType.Arrow.ToValue()) continue; // Don't bind to other arrows
 
             var util = ShapeUtils.Get(shape.ShapeType);
             if (util == null) continue;
@@ -643,7 +637,7 @@ public class Editor
         normY = Math.Clamp(normY, 0, 1);
 
         // Create or update binding
-        var bindingId = $"binding:{arrowId}:{endpoint}";
+        var bindingId = $"binding:{arrowId}:{endpoint.ToValue()}";
         var binding = new TLBindingRecord
         {
             Id = bindingId,
@@ -661,18 +655,18 @@ public class Editor
     /// <summary>
     /// Remove binding for an arrow endpoint.
     /// </summary>
-    public void UnbindArrowEndpoint(string arrowId, string endpoint)
+    public void UnbindArrowEndpoint(string arrowId, ArrowEndpoint endpoint)
     {
-        var bindingId = $"binding:{arrowId}:{endpoint}";
+        var bindingId = $"binding:{arrowId}:{endpoint.ToValue()}";
         Store.Remove(bindingId);
     }
 
     /// <summary>
     /// Get the binding for an arrow endpoint, if any.
     /// </summary>
-    public TLBindingRecord? GetArrowBinding(string arrowId, string endpoint)
+    public TLBindingRecord? GetArrowBinding(string arrowId, ArrowEndpoint endpoint)
     {
-        var bindingId = $"binding:{arrowId}:{endpoint}";
+        var bindingId = $"binding:{arrowId}:{endpoint.ToValue()}";
         return Store.Get<TLBindingRecord>(bindingId);
     }
 
@@ -686,7 +680,7 @@ public class Editor
         if (arrow?.Props is not TLArrowProps arrowProps) return;
 
         // Update start binding
-        var startBinding = GetArrowBinding(arrowId, "start");
+        var startBinding = GetArrowBinding(arrowId, ArrowEndpoint.Start);
         if (startBinding != null)
         {
             var targetShape = Store.Get<TLShapeRecord>(startBinding.ToShapeId);
@@ -708,8 +702,10 @@ public class Editor
                     // Adjust all waypoints
                     for (int i = 0; i < arrowProps.Waypoints.Count; i++)
                     {
-                        arrowProps.Waypoints[i][0] -= dx;
-                        arrowProps.Waypoints[i][1] -= dy;
+                        var pt = arrowProps.Waypoints[i];
+                        arrowProps.Waypoints[i] = new SKPoint(
+                            (float)(pt.X - dx),
+                            (float)(pt.Y - dy));
                     }
                 }
             }
@@ -721,7 +717,7 @@ public class Editor
         }
 
         // Update end binding
-        var endBinding = GetArrowBinding(arrowId, "end");
+        var endBinding = GetArrowBinding(arrowId, ArrowEndpoint.End);
         if (endBinding != null)
         {
             var targetShape = Store.Get<TLShapeRecord>(endBinding.ToShapeId);
@@ -737,9 +733,9 @@ public class Editor
                     // Update last waypoint
                     if (arrowProps.Waypoints.Count >= 2)
                     {
-                        var lastWp = arrowProps.Waypoints[^1];
-                        lastWp[0] = worldX - arrow.X;
-                        lastWp[1] = worldY - arrow.Y;
+                        arrowProps.Waypoints[^1] = new SKPoint(
+                            (float)(worldX - arrow.X),
+                            (float)(worldY - arrow.Y));
                     }
                 }
             }
@@ -756,18 +752,18 @@ public class Editor
     /// </summary>
     public void UpdateAllArrowBindings()
     {
-        var arrows = Store.GetAllShapes().Where(s => s.ShapeType == "arrow");
+        var arrows = Store.GetAllShapes().Where(s => s.ShapeType == ShapeType.Arrow.ToValue());
         foreach (var arrow in arrows)
             UpdateArrowBindings(arrow.Id);
     }
 
     /// <summary>
     /// Find the arrow endpoint at a given world point.
-    /// Returns ("arrowId", "start"/"end") or null.
+    /// Returns (arrowId, endpoint) or null.
     /// </summary>
-    public (string ArrowId, string Endpoint)? HitTestArrowEndpoint(double worldX, double worldY)
+    public (string ArrowId, ArrowEndpoint Endpoint)? HitTestArrowEndpoint(double worldX, double worldY)
     {
-        var arrows = Store.GetAllShapes().Where(s => s.ShapeType == "arrow");
+        var arrows = Store.GetAllShapes().Where(s => s.ShapeType == ShapeType.Arrow.ToValue());
         var point = new SKPointd(worldX, worldY);
         float hitRadius = 12f / (float)Camera.Zoom;
 
@@ -777,16 +773,16 @@ public class Editor
             if (arrowProps.Waypoints.Count < 2) continue;
 
             // Check start point
-            var startX = arrow.X + arrowProps.Waypoints[0][0];
-            var startY = arrow.Y + arrowProps.Waypoints[0][1];
+            var startX = arrow.X + arrowProps.Waypoints[0].X;
+            var startY = arrow.Y + arrowProps.Waypoints[0].Y;
             if (Math.Abs(worldX - startX) < hitRadius && Math.Abs(worldY - startY) < hitRadius)
-                return (arrow.Id, "start");
+                return (arrow.Id, ArrowEndpoint.Start);
 
             // Check end point
-            var endX = arrow.X + arrowProps.Waypoints[^1][0];
-            var endY = arrow.Y + arrowProps.Waypoints[^1][1];
+            var endX = arrow.X + arrowProps.Waypoints[^1].X;
+            var endY = arrow.Y + arrowProps.Waypoints[^1].Y;
             if (Math.Abs(worldX - endX) < hitRadius && Math.Abs(worldY - endY) < hitRadius)
-                return (arrow.Id, "end");
+                return (arrow.Id, ArrowEndpoint.End);
         }
 
         return null;
@@ -797,7 +793,6 @@ public class Editor
         return "a" + pos.ToString("D6");
     }
 
-    // ── Snapping ────────────────────────────────────────────
 
     /// <summary>Snap a value to the nearest grid increment.</summary>
     public double SnapToGrid(double value, double gridSize = 10)
@@ -808,7 +803,6 @@ public class Editor
     /// <summary>Toggle grid snapping on/off.</summary>
     public bool SnapEnabled { get; set; } = false;
 
-    // ── Double-click ────────────────────────────────────────
 
     public void OnDoubleClick(double screenX, double screenY)
     {
@@ -831,8 +825,8 @@ public class Editor
                     // Start editing geo shape text
                     Selection.ClearSelection();
                     Selection.Select(shape.Id);
-                    SetActiveTool("text");
-                    var textTool = GetTool("text") as Tools.TextTool;
+                    SetActiveTool(ToolId.Text);
+                    var textTool = GetTool(ToolId.Text.ToValue()) as Tools.TextTool;
                     if (textTool != null)
                     {
                         textTool.EditingShapeId = shape.Id;
@@ -845,8 +839,8 @@ public class Editor
                 {
                     Selection.ClearSelection();
                     Selection.Select(shape.Id);
-                    SetActiveTool("text");
-                    var textTool = GetTool("text") as Tools.TextTool;
+                    SetActiveTool(ToolId.Text);
+                    var textTool = GetTool(ToolId.Text.ToValue()) as Tools.TextTool;
                     if (textTool != null)
                     {
                         textTool.EditingShapeId = shape.Id;
@@ -859,7 +853,6 @@ public class Editor
         }
     }
 
-    // ── Pointer events ──────────────────────────────────────
 
     public void OnPointerDown(double screenX, double screenY, int pointerId,
         bool shiftKey = false, bool altKey = false, bool ctrlKey = false)
@@ -909,7 +902,7 @@ public class Editor
         }
 
         // Track hovered handle for cursor display
-        if (!IsPointerDown && ActiveTool.Id == "select" && Selection.Count > 0)
+        if (!IsPointerDown && ActiveTool.Id == ToolId.Select.ToValue() && Selection.Count > 0)
         {
             HoveredHandle = Selection.HitTestHandles(PointerWorld, (float)Camera.Zoom, ShapeUtils);
         }
@@ -1012,25 +1005,25 @@ public class Editor
 
             // Tool switching (single keys, no Ctrl)
             case "v" or "V" when !ctrlKey:
-                SetActiveTool("select");
+                SetActiveTool(ToolId.Select);
                 return;
             case "d" or "D" when !ctrlKey:
-                SetActiveTool("draw");
+                SetActiveTool(ToolId.Draw);
                 return;
             case "g" or "G" when !ctrlKey:
-                SetActiveTool("geo");
+                SetActiveTool(ToolId.Geo);
                 return;
             case "h" or "H" when !ctrlKey:
-                SetActiveTool("hand");
+                SetActiveTool(ToolId.Hand);
                 return;
             case "t" or "T" when !ctrlKey:
-                SetActiveTool("text");
+                SetActiveTool(ToolId.Text);
                 return;
             case "e" or "E" when !ctrlKey:
-                SetActiveTool("eraser");
+                SetActiveTool(ToolId.Eraser);
                 return;
             case "a" or "A" when !ctrlKey:
-                SetActiveTool("arrow");
+                SetActiveTool(ToolId.Arrow);
                 return;
         }
 
@@ -1055,7 +1048,6 @@ public class Editor
         }
     }
 
-    // ── Rendering ───────────────────────────────────────────
 
     public void Render(SKCanvas canvas, SKImageInfo info)
     {
@@ -1124,7 +1116,6 @@ public class Editor
         }
     }
 
-    // ── Grid ────────────────────────────────────────────────
 
     private void DrawGrid(SKCanvas canvas, int width, int height)
     {
