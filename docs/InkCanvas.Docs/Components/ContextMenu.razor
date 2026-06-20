@@ -1,0 +1,120 @@
+@using InkCanvas.Core.Editor
+@using InkCanvas.Core.Store
+
+@if (_visible)
+{
+    <div class="context-menu-overlay" @onclick="Close" @oncontextmenu:preventDefault>
+        <div class="context-menu" style="left: @_x px; top: @_y px;">
+            @if (_hasSelection)
+            {
+                <button class="ctx-item" @onclick='() => Run("copy")'>📋 Copy <span>Ctrl+C</span></button>
+                <button class="ctx-item" @onclick='() => Run("cut")'>✂️ Cut <span>Ctrl+X</span></button>
+                <button class="ctx-item" @onclick='() => Run("paste")'>📄 Paste <span>Ctrl+V</span></button>
+                <div class="ctx-separator"></div>
+                <button class="ctx-item" @onclick='() => Run("delete")'>🗑️ Delete <span>Del</span></button>
+                <div class="ctx-separator"></div>
+                <button class="ctx-item" @onclick='() => Run("bringFront")'>⬆️ Bring to Front</button>
+                <button class="ctx-item" @onclick='() => Run("sendBack")'>⬇️ Send to Back</button>
+                <button class="ctx-item" @onclick='() => Run("bringForward")'>🔼 Bring Forward</button>
+                <button class="ctx-item" @onclick='() => Run("sendBackward")'>🔽 Send Backward</button>
+                @if (_selectedCount >= 2)
+                {
+                    <div class="ctx-separator"></div>
+                    <button class="ctx-item" @onclick='() => Run("group")'>📦 Group <span>Ctrl+G</span></button>
+                }
+                @if (HasGroupSelected)
+                {
+                    <button class="ctx-item" @onclick='() => Run("ungroup")'>📭 Ungroup <span>Ctrl+Shift+G</span></button>
+                }
+                @if (_selectedCount >= 2)
+                {
+                    <div class="ctx-separator"></div>
+                    <button class="ctx-item" @onclick='() => Run("alignLeft")'>⫷ Align Left</button>
+                    <button class="ctx-item" @onclick='() => Run("alignCenter")'>⫿ Align Center</button>
+                    <button class="ctx-item" @onclick='() => Run("alignRight")'>⫸ Align Right</button>
+                    <button class="ctx-item" @onclick='() => Run("alignTop")'>⫠ Align Top</button>
+                    <button class="ctx-item" @onclick='() => Run("alignMiddle")'>⫟ Align Middle</button>
+                    <button class="ctx-item" @onclick='() => Run("alignBottom")'>⫡ Align Bottom</button>
+                }
+                @if (_selectedCount >= 3)
+                {
+                    <div class="ctx-separator"></div>
+                    <button class="ctx-item" @onclick='() => Run("distH")'>↔️ Distribute Horizontal</button>
+                    <button class="ctx-item" @onclick='() => Run("distV")'>↕️ Distribute Vertical</button>
+                }
+            }
+            else
+            {
+                <button class="ctx-item" @onclick='() => Run("paste")'>📄 Paste <span>Ctrl+V</span></button>
+                <div class="ctx-separator"></div>
+                <button class="ctx-item" @onclick='() => Run("selectAll")'>Select All <span>Ctrl+A</span></button>
+                <div class="ctx-separator"></div>
+                <button class="ctx-item" @onclick='() => Run("undo")'>↩️ Undo <span>Ctrl+Z</span></button>
+                <button class="ctx-item" @onclick='() => Run("redo")'>↪️ Redo <span>Ctrl+Y</span></button>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Editor Editor { get; set; } = null!;
+
+    private bool _visible;
+    private double _x, _y;
+    private bool _hasSelection;
+    private int _selectedCount;
+    private bool HasGroupSelected => Editor.Selection.GetSelectedShapes(Editor.Store)
+        .Any(s => s.Shape == ShapeType.Group);
+
+    public void Show(double x, double y)
+    {
+        _x = x;
+        _y = y;
+        _hasSelection = Editor.Selection.Count > 0;
+        _selectedCount = Editor.Selection.Count;
+        _visible = true;
+        StateHasChanged();
+    }
+
+    private void Close()
+    {
+        _visible = false;
+        StateHasChanged();
+    }
+
+    private void Run(string action)
+    {
+        switch (action)
+        {
+            case "copy": Editor.Copy(); break;
+            case "cut": Editor.Cut(); break;
+            case "paste": Editor.Paste(); break;
+            case "delete":
+                Editor.PushUndo();
+                var ids = Editor.Selection.SelectedIds.ToList();
+                Editor.Selection.ClearSelection();
+                foreach (var id in ids) Editor.Store.Remove(id);
+                break;
+            case "selectAll":
+                Editor.Selection.SelectAll(Editor.Store.GetAllShapes().Select(s => s.Id));
+                break;
+            case "undo": Editor.Undo(); break;
+            case "redo": Editor.Redo(); break;
+            case "bringFront": Editor.BringToFront(); break;
+            case "sendBack": Editor.SendToBack(); break;
+            case "bringForward": Editor.BringForward(); break;
+            case "sendBackward": Editor.SendBackward(); break;
+            case "alignLeft": Editor.Align(AlignDirection.Left); break;
+            case "alignCenter": Editor.Align(AlignDirection.Center); break;
+            case "alignRight": Editor.Align(AlignDirection.Right); break;
+            case "alignTop": Editor.Align(AlignDirection.Top); break;
+            case "alignMiddle": Editor.Align(AlignDirection.Middle); break;
+            case "alignBottom": Editor.Align(AlignDirection.Bottom); break;
+            case "distH": Editor.Distribute(DistributeDirection.Horizontal); break;
+            case "distV": Editor.Distribute(DistributeDirection.Vertical); break;
+            case "group": Editor.GroupSelected(); break;
+            case "ungroup": Editor.UngroupSelected(); break;
+        }
+        Close();
+    }
+}

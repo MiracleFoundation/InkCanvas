@@ -1,6 +1,6 @@
-# Tldraw.Blazor
+# InkCanvas
 
-Infinite canvas whiteboard SDK for Blazor, ported from [tldraw](https://tldraw.dev/) — powered by SkiaSharp.
+Infinite canvas whiteboard SDK for Blazor — powered by SkiaSharp.
 
 - 🎨 **8 shape types** — Geo, Draw, Text, Note, Frame, Line, Arrow, Image
 - 🛠️ **8 tools** — Select, Draw, Geo, Hand, Text, Arrow, Eraser + Space-pan
@@ -18,15 +18,15 @@ Infinite canvas whiteboard SDK for Blazor, ported from [tldraw](https://tldraw.d
 ## Install
 
 ```bash
-git clone https://github.com/your-repo/Tldraw.Blazor.git
-cd Tldraw.Blazor
+git clone https://github.com/your-repo/InkCanvas.git
+cd InkCanvas
 dotnet build
 ```
 
 ## Run
 
 ```bash
-dotnet run --project src/Tldraw.Blazor.App --urls "http://localhost:5000"
+dotnet run --project src/InkCanvas.App --urls "http://localhost:5000"
 ```
 
 Open `http://localhost:5000` in your browser.
@@ -36,8 +36,8 @@ Open `http://localhost:5000` in your browser.
 ### As a Component
 
 ```razor
-@using Tldraw.Blazor.Skia
-@using Tldraw.Blazor.Core.Editor
+@using InkCanvas.Skia
+@using InkCanvas.Core.Editor
 
 <TldrawCanvas Editor="_editor" />
 
@@ -89,7 +89,7 @@ Open `http://localhost:5000` in your browser.
 ## Architecture
 
 ```
-Tldraw.Blazor.Core/           ← Pure C#, no UI dependencies
+InkCanvas.Core/           ← Pure C#, no UI dependencies
 ├── Editor/
 │   ├── Camera.cs              ← Pan/Zoom/Transform
 │   ├── Editor.cs              ← Central engine
@@ -100,10 +100,10 @@ Tldraw.Blazor.Core/           ← Pure C#, no UI dependencies
 ├── Store/                     ← Reactive record store
 └── Tools/                     ← 8 tool implementations
 
-Tldraw.Blazor.Skia/           ← SkiaSharp Blazor component
+InkCanvas.Skia/           ← SkiaSharp Blazor component
 └── TldrawCanvas.razor         ← Canvas with touch support
 
-Tldraw.Blazor.App/            ← Demo app
+InkCanvas.App/            ← Demo app
 ├── Components/                ← UI panels
 └── Pages/Home.razor           ← Full demo
 ```

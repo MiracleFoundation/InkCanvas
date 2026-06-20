@@ -1,10 +1,9 @@
 <Solution>
   <Folder Name="/docs/">
-    <Project Path="docs/Tldraw.Docs/Tldraw.Docs.csproj" />
+    <Project Path="docs/InkCanvas.Docs/InkCanvas.Docs.csproj" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/Tldraw.Blazor.App/Tldraw.Blazor.App.csproj" />
-    <Project Path="src/Tldraw.Blazor.Core/Tldraw.Blazor.Core.csproj" />
-    <Project Path="src/Tldraw.Blazor.Skia/Tldraw.Blazor.Skia.csproj" />
+    <Project Path="src/InkCanvas.Canvas/InkCanvas.Canvas.csproj" />
+    <Project Path="src/InkCanvas.Core/InkCanvas.Core.csproj" />
   </Folder>
 </Solution>
