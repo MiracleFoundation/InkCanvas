@@ -111,8 +111,8 @@
     private DashPattern CurrentDash => _selectedShapes.FirstOrDefault()?.Style.DashPattern ?? DashPattern.Solid;
     private double CurrentBorderRadius => (double)(_selectedShapes.FirstOrDefault()?.Style.BorderRadius ?? NonNegativeDouble.Zero);
     private double CurrentFontSize => (double)(_selectedShapes.FirstOrDefault()?.Style.FontSize ?? new PositiveDouble(16));
-    private bool HasGeoShapes => _selectedShapes.Any(s => s.ShapeType == "geo");
-    private bool HasTextShapes => _selectedShapes.Any(s => s.ShapeType is "text" or "note");
+    private bool HasGeoShapes => _selectedShapes.Any(s => s.Shape == ShapeType.Geo);
+    private bool HasTextShapes => _selectedShapes.Any(s => s.Shape is ShapeType.Text or ShapeType.Note);
 
     protected override void OnInitialized()
     {

@@ -8,13 +8,13 @@ namespace Tldraw.Blazor.Core.Shapes;
 /// </summary>
 public class NoteShapeUtil : ShapeUtil
 {
-    public override string ShapeType => "note";
+    public override ShapeType ShapeType => ShapeType.Note;
 
     private const double DefaultSize = 200;
 
     public override TLShapeRecord CreateDefault(double x, double y) => new()
     {
-        ShapeType = "note",
+        Shape = ShapeType.Note,
         X = x,
         Y = y,
         Width = DefaultSize,

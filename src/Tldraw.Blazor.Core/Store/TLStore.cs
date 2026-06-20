@@ -16,7 +16,7 @@ public class TLStore
     public void Put(TLRecord record)
     {
         _records[record.Id] = record;
-        OnChanged(new[] { new TLStoreChange(TLStoreChange.ChangeType.Put, record.Id, record) });
+        OnChanged([new TLStoreChange(TLStoreChange.ChangeType.Put, record.Id, record)]);
     }
 
     /// <summary>Insert or update multiple records.</summary>
@@ -37,7 +37,7 @@ public class TLStore
     {
         if (_records.Remove(id))
         {
-            OnChanged(new[] { new TLStoreChange(TLStoreChange.ChangeType.Remove, id, null) });
+            OnChanged([new TLStoreChange(TLStoreChange.ChangeType.Remove, id, null)]);
             return true;
         }
         return false;

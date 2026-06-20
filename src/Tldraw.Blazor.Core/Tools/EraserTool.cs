@@ -62,7 +62,7 @@ public class EraserTool : StateNode
                 if (shape.IsLocked || shape.IsHidden) continue;
                 if (_tool.ErasedIds.Contains(shape.Id)) continue;
 
-                var util = Editor.ShapeUtils.Get(shape.ShapeType);
+                var util = Editor.ShapeUtils.Get(shape.Shape);
                 if (util != null && util.HitTest(shape, point))
                 {
                     _tool.ErasedIds.Add(shape.Id);
@@ -106,7 +106,7 @@ public class EraserTool : StateNode
                 if (shape.IsLocked || shape.IsHidden) continue;
                 if (_tool.ErasedIds.Contains(shape.Id)) continue;
 
-                var util = Editor.ShapeUtils.Get(shape.ShapeType);
+                var util = Editor.ShapeUtils.Get(shape.Shape);
                 if (util != null && util.HitTest(shape, point))
                 {
                     _tool.ErasedIds.Add(shape.Id);

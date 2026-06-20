@@ -365,57 +365,57 @@
 
     private void CreateDemoShapes()
     {
-        _editor.CreateShape("frame", 50, 50);
+        _editor.CreateShape(ShapeType.Frame, 50, 50);
         var frame = _editor.Store.GetAllShapes().Last();
-        frame.Width = 850; frame.Height = 620; frame.Index = "a";
+        frame.Width = 850; frame.Height = 620; frame.Index = new("a");
         if (frame.Props is TLFrameProps fp) fp.Name = "Demo Frame";
 
-        _editor.CreateShape("geo", 100, 100);
+        _editor.CreateShape(ShapeType.Geo, 100, 100);
         var rect = _editor.Store.GetAllShapes().Last();
         rect.Width = 200; rect.Height = 120;
         rect.Style.Fill = new("#E3F2FD"); rect.Style.Color = new("#1565C0"); rect.Style.BorderRadius = new(8);
         if (rect.Props is TLGeoProps rp) { rp.GeoType = GeoVariant.Rectangle; rp.Text = "Rectangle"; }
 
-        _editor.CreateShape("geo", 400, 100);
+        _editor.CreateShape(ShapeType.Geo, 400, 100);
         var ellipse = _editor.Store.GetAllShapes().Last();
         ellipse.Width = 180; ellipse.Height = 120;
         ellipse.Style.Fill = new("#FCE4EC"); ellipse.Style.Color = new("#C62828");
         if (ellipse.Props is TLGeoProps ep) { ep.GeoType = GeoVariant.Ellipse; ep.Text = "Ellipse"; }
 
-        _editor.CreateShape("geo", 680, 100);
+        _editor.CreateShape(ShapeType.Geo, 680, 100);
         var diamond = _editor.Store.GetAllShapes().Last();
         diamond.Width = 140; diamond.Height = 140;
         diamond.Style.Fill = new("#FFF3E0"); diamond.Style.Color = new("#E65100");
         if (diamond.Props is TLGeoProps dp) { dp.GeoType = GeoVariant.Diamond; dp.Text = "Diamond"; }
 
-        _editor.CreateShape("geo", 100, 320);
+        _editor.CreateShape(ShapeType.Geo, 100, 320);
         var star = _editor.Store.GetAllShapes().Last();
         star.Width = 140; star.Height = 140;
         star.Style.Fill = new("#FFF9C4"); star.Style.Color = new("#F9A825");
         if (star.Props is TLGeoProps sp) sp.GeoType = GeoVariant.Star;
 
-        _editor.CreateShape("geo", 320, 300);
+        _editor.CreateShape(ShapeType.Geo, 320, 300);
         var hex = _editor.Store.GetAllShapes().Last();
         hex.Width = 150; hex.Height = 130;
         hex.Style.Fill = new("#E8F5E9"); hex.Style.Color = new("#2E7D32");
         if (hex.Props is TLGeoProps hp) hp.GeoType = GeoVariant.Hexagon;
 
-        _editor.CreateShape("geo", 550, 300);
+        _editor.CreateShape(ShapeType.Geo, 550, 300);
         var tri = _editor.Store.GetAllShapes().Last();
         tri.Width = 150; tri.Height = 130;
         tri.Style.Fill = new("#F3E5F5"); tri.Style.Color = new("#6A1B9A");
         if (tri.Props is TLGeoProps tp) tp.GeoType = GeoVariant.Triangle;
 
-        _editor.CreateShape("text", 100, 520);
+        _editor.CreateShape(ShapeType.Text, 100, 520);
         var text = _editor.Store.GetAllShapes().Last();
         if (text.Props is TLTextProps txp) { txp.Text = "Hello, tldraw!"; txp.FontSize = new(32); }
         text.Style.Color = new("#1565C0");
 
-        _editor.CreateShape("note", 400, 500);
+        _editor.CreateShape(ShapeType.Note, 400, 500);
         var note = _editor.Store.GetAllShapes().Last();
         if (note.Props is TLNoteProps np) { np.Text = "Right-click\nfor menu!"; np.NoteColor = new("#FFEB3B"); }
 
-        _editor.CreateShape("line", 700, 500);
+        _editor.CreateShape(ShapeType.Line, 700, 500);
         var line = _editor.Store.GetAllShapes().Last();
         line.Width = 200; line.Height = 100;
         line.Style.Color = new("#1565C0"); line.Style.StrokeWidth = new(3);

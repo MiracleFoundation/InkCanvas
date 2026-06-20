@@ -173,6 +173,55 @@ public readonly struct HexColor : IEquatable<HexColor>
     }
 }
 
+/// <summary>
+/// A z-ordering key for fractional indexing.
+/// Format: letter prefix + numeric suffix (e.g. "a0", "a1", "b0").
+/// Supports comparison and insertion between two keys.
+/// </summary>
+[JsonConverter(typeof(ZIndexJsonConverter))]
+public readonly struct ZIndex : IEquatable<ZIndex>, IComparable<ZIndex>
+{
+    public string Value { get; }
+
+    public ZIndex(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            throw new ArgumentException("ZIndex must not be empty.", nameof(value));
+        Value = value;
+    }
+
+    /// <summary>Create a ZIndex from an integer position (simple ordering).</summary>
+    public static ZIndex FromPosition(int position) => new($"a{position:D6}");
+
+    /// <summary>Create a ZIndex between two existing keys.</summary>
+    public static ZIndex Between(ZIndex before, ZIndex after)
+    {
+        // Simple midpoint: append "5" to the shorter one
+        var b = before.Value;
+        var a = after.Value;
+        if (string.Compare(b, a, StringComparison.Ordinal) < 0)
+            return new(b + "5");
+        return new(a + "5");
+    }
+
+    public static implicit operator string(ZIndex z) => z.Value;
+    public static explicit operator ZIndex(string s) => new(s);
+
+    public bool Equals(ZIndex other) => Value == other.Value;
+    public override bool Equals(object? obj) => obj is ZIndex other && Equals(other);
+    public override int GetHashCode() => Value.GetHashCode();
+    public override string ToString() => Value;
+
+    public int CompareTo(ZIndex other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
+
+    public static bool operator ==(ZIndex left, ZIndex right) => left.Equals(right);
+    public static bool operator !=(ZIndex left, ZIndex right) => !left.Equals(right);
+    public static bool operator <(ZIndex left, ZIndex right) => left.CompareTo(right) < 0;
+    public static bool operator >(ZIndex left, ZIndex right) => left.CompareTo(right) > 0;
+    public static bool operator <=(ZIndex left, ZIndex right) => left.CompareTo(right) <= 0;
+    public static bool operator >=(ZIndex left, ZIndex right) => left.CompareTo(right) >= 0;
+}
+
 internal class PositiveDoubleJsonConverter : JsonConverter<PositiveDouble>
 {
     public override PositiveDouble Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -222,6 +271,19 @@ internal class NonNegativeDoubleJsonConverter : JsonConverter<NonNegativeDouble>
     public override void Write(Utf8JsonWriter writer, NonNegativeDouble value, JsonSerializerOptions options)
     {
         writer.WriteNumberValue(value.Value);
+    }
+}
+
+internal class ZIndexJsonConverter : JsonConverter<ZIndex>
+{
+    public override ZIndex Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        return new ZIndex(reader.GetString() ?? string.Empty);
+    }
+
+    public override void Write(Utf8JsonWriter writer, ZIndex value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(value.Value);
     }
 }
 

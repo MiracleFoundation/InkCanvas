@@ -37,7 +37,7 @@
 
         foreach (var shape in shapes)
         {
-            var util = Editor.ShapeUtils.Get(shape.ShapeType);
+            var util = Editor.ShapeUtils.Get(shape.Shape);
             if (util == null) continue;
             var bounds = util.GetBounds(shape);
             minX = Math.Min(minX, bounds.Left);
@@ -68,7 +68,7 @@
 
         foreach (var shape in shapes.Where(s => !s.IsHidden))
         {
-            var util = Editor.ShapeUtils.Get(shape.ShapeType);
+            var util = Editor.ShapeUtils.Get(shape.Shape);
             if (util == null) continue;
             var bounds = util.GetBounds(shape);
             canvas.DrawRect(bounds, shapePaint);

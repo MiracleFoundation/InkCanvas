@@ -2,6 +2,28 @@ using System.Text.Json.Serialization;
 
 namespace Tldraw.Blazor.Core;
 
+/// <summary>Store record type discriminator.</summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum RecordType
+{
+    [JsonPropertyName("shape")]
+    Shape,
+    [JsonPropertyName("page")]
+    Page,
+    [JsonPropertyName("binding")]
+    Binding,
+    [JsonPropertyName("asset")]
+    Asset,
+}
+
+/// <summary>Asset type discriminator.</summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum AssetType
+{
+    Image,
+    Video,
+}
+
 /// <summary>Shape type discriminator.</summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ShapeType
@@ -114,6 +136,22 @@ public static class FillConstants
 /// <summary>Extension methods for enums to get string values.</summary>
 public static class EnumExtensions
 {
+    public static string ToValue(this RecordType type) => type switch
+    {
+        RecordType.Shape => "shape",
+        RecordType.Page => "page",
+        RecordType.Binding => "binding",
+        RecordType.Asset => "asset",
+        _ => type.ToString().ToLowerInvariant(),
+    };
+
+    public static string ToValue(this AssetType type) => type switch
+    {
+        AssetType.Image => "image",
+        AssetType.Video => "video",
+        _ => type.ToString().ToLowerInvariant(),
+    };
+
     public static string ToValue(this ShapeType type) => type switch
     {
         ShapeType.Geo => "geo",

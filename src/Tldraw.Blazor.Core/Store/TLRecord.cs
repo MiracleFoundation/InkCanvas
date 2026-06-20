@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Tldraw.Blazor.Core;
 
 namespace Tldraw.Blazor.Core.Store;
 
@@ -15,8 +16,8 @@ public abstract class TLRecord
 {
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
 
-    /// <summary>Record type discriminator: "shape", "page", "binding", "asset".</summary>
-    public abstract string Type { get; }
+    /// <summary>Record type discriminator.</summary>
+    public abstract RecordType RecordType { get; }
 }
 
 /// <summary>
@@ -25,10 +26,10 @@ public abstract class TLRecord
 /// </summary>
 public class TLShapeRecord : TLRecord
 {
-    public override string Type => "shape";
+    public override RecordType RecordType => RecordType.Shape;
 
-    /// <summary>Shape sub-type: "geo", "draw", "text", "arrow", "line", "note", "frame", "image", "group".</summary>
-    public string ShapeType { get; set; } = string.Empty;
+    /// <summary>Shape sub-type.</summary>
+    public ShapeType Shape { get; set; }
 
     /// <summary>X position in world space.</summary>
     public double X { get; set; }
@@ -48,8 +49,8 @@ public class TLShapeRecord : TLRecord
     /// <summary>Parent ID (for grouped shapes or frames).</summary>
     public string? ParentId { get; set; }
 
-    /// <summary>Z-ordering key (fractional indexing).</summary>
-    public string Index { get; set; } = "a0";
+    /// <summary>Z-ordering key (fractional indexing). Supports comparison and insertion.</summary>
+    public ZIndex Index { get; set; } = new("a0");
 
     /// <summary>Whether the shape is locked.</summary>
     public bool IsLocked { get; set; }
@@ -68,7 +69,7 @@ public class TLShapeRecord : TLRecord
 /// <summary>A page in the document.</summary>
 public class TLPageRecord : TLRecord
 {
-    public override string Type => "page";
+    public override RecordType RecordType => RecordType.Page;
     public string Name { get; set; } = "Page 1";
     public int Index { get; set; }
 }
@@ -76,9 +77,9 @@ public class TLPageRecord : TLRecord
 /// <summary>A binding between shapes (e.g. arrow endpoints).</summary>
 public class TLBindingRecord : TLRecord
 {
-    public override string Type => "binding";
-    public string FromShapeId { get; set; } = "";
-    public string ToShapeId { get; set; } = "";
+    public override RecordType RecordType => RecordType.Binding;
+    public string FromShapeId { get; set; } = string.Empty;
+    public string ToShapeId { get; set; } = string.Empty;
     public ArrowEndpoint FromHandle { get; set; } = ArrowEndpoint.Start;
     public double NormalizedX { get; set; }
     public double NormalizedY { get; set; }
@@ -87,10 +88,10 @@ public class TLBindingRecord : TLRecord
 /// <summary>An asset (image, video, etc.).</summary>
 public class TLAssetRecord : TLRecord
 {
-    public override string Type => "asset";
-    public string AssetType { get; set; } = ""; // "image", "video"
-    public string Name { get; set; } = "";
-    public string? Src { get; set; } // URL or data URI
+    public override RecordType RecordType => RecordType.Asset;
+    public AssetType Asset { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? Src { get; set; } 
     public double Width { get; set; }
     public double Height { get; set; }
 }

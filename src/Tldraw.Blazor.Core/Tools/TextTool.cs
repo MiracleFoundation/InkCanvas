@@ -41,7 +41,7 @@ public class TextTool : StateNode
             // Create a new text shape at click position
             var shape = new TLShapeRecord
             {
-                ShapeType = "text",
+                Shape = Tldraw.Blazor.Core.ShapeType.Text,
                 X = e.WorldX,
                 Y = e.WorldY,
                 Width = 200,

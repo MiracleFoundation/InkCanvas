@@ -12,7 +12,7 @@ public abstract class StateNode
     public abstract string Id { get; }
 
     /// <summary>Reference to the editor.</summary>
-    public Tldraw.Blazor.Core.Editor.Editor Editor { get; internal set; } = null!;
+    public Editor.Editor Editor { get; internal set; } = null!;
 
     /// <summary>Parent state (null for root tool).</summary>
     public StateNode? Parent { get; internal set; }

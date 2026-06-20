@@ -11,7 +11,7 @@ namespace Tldraw.Blazor.Core.Shapes;
 public abstract class ShapeUtil
 {
     /// <summary>The shape type this util handles.</summary>
-    public abstract string ShapeType { get; }
+    public abstract ShapeType ShapeType { get; }
 
     /// <summary>Create a shape record with default props at the given position.</summary>
     public abstract TLShapeRecord CreateDefault(double x, double y);

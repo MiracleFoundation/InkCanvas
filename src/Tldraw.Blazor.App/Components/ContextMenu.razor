@@ -64,7 +64,7 @@
     private bool _hasSelection;
     private int _selectedCount;
     private bool HasGroupSelected => Editor.Selection.GetSelectedShapes(Editor.Store)
-        .Any(s => s.ShapeType == "group");
+        .Any(s => s.Shape == ShapeType.Group);
 
     public void Show(double x, double y)
     {

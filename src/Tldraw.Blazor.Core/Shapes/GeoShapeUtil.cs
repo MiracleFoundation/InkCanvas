@@ -8,11 +8,11 @@ namespace Tldraw.Blazor.Core.Shapes;
 /// </summary>
 public class GeoShapeUtil : ShapeUtil
 {
-    public override string ShapeType => "geo";
+    public override ShapeType ShapeType => ShapeType.Geo;
 
     public override TLShapeRecord CreateDefault(double x, double y) => new()
     {
-        ShapeType = "geo",
+        Shape = ShapeType.Geo,
         X = x,
         Y = y,
         Width = 160,

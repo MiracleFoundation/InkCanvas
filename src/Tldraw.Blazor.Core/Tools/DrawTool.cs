@@ -38,7 +38,7 @@ public class DrawTool : StateNode
             // Create a new draw shape at the pointer position
             var shape = new TLShapeRecord
             {
-                ShapeType = "draw",
+                Shape = Tldraw.Blazor.Core.ShapeType.Draw,
                 X = e.WorldX,
                 Y = e.WorldY,
                 Width = 0,

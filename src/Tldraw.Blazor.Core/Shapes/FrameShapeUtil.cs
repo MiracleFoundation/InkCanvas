@@ -8,11 +8,11 @@ namespace Tldraw.Blazor.Core.Shapes;
 /// </summary>
 public class FrameShapeUtil : ShapeUtil
 {
-    public override string ShapeType => "frame";
+    public override ShapeType ShapeType => ShapeType.Frame;
 
     public override TLShapeRecord CreateDefault(double x, double y) => new()
     {
-        ShapeType = "frame",
+        Shape = ShapeType.Frame,
         X = x,
         Y = y,
         Width = 400,

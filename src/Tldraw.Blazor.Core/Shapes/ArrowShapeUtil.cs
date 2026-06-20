@@ -8,14 +8,14 @@ namespace Tldraw.Blazor.Core.Shapes;
 /// </summary>
 public class ArrowShapeUtil : ShapeUtil
 {
-    public override string ShapeType => "arrow";
+    public override ShapeType ShapeType => ShapeType.Arrow;
 
     /// <summary>Store reference for checking bindings (set by Editor).</summary>
     public TLStore? Store { get; set; }
 
     public override TLShapeRecord CreateDefault(double x, double y) => new()
     {
-        ShapeType = "arrow",
+        Shape = ShapeType.Arrow,
         X = x,
         Y = y,
         Width = 200,

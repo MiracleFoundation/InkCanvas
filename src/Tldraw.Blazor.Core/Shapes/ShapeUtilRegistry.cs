@@ -1,15 +1,14 @@
 namespace Tldraw.Blazor.Core.Shapes;
 
 /// <summary>
-/// Registry mapping shape type strings to their ShapeUtil implementations.
+/// Registry mapping ShapeType enum to ShapeUtil implementations.
 /// </summary>
 public class ShapeUtilRegistry
 {
-    private readonly Dictionary<string, ShapeUtil> _utils = new();
+    private readonly Dictionary<ShapeType, ShapeUtil> _utils = new();
 
     public ShapeUtilRegistry()
     {
-        // Register built-in shape utils
         Register(new GeoShapeUtil());
         Register(new DrawShapeUtil());
         Register(new TextShapeUtil());
@@ -27,9 +26,9 @@ public class ShapeUtilRegistry
     }
 
     /// <summary>Get the shape util for a given type, or null.</summary>
-    public ShapeUtil? Get(string shapeType) =>
+    public ShapeUtil? Get(ShapeType shapeType) =>
         _utils.TryGetValue(shapeType, out var util) ? util : null;
 
     /// <summary>All registered shape types.</summary>
-    public IReadOnlyCollection<string> RegisteredTypes => _utils.Keys;
+    public IReadOnlyCollection<ShapeType> RegisteredTypes => _utils.Keys;
 }

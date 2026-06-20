@@ -138,7 +138,7 @@ public class SelectionManager
 
         foreach (var shape in shapes)
         {
-            var util = shapeUtils.Get(shape.ShapeType);
+            var util = shapeUtils.Get(shape.Shape);
             if (util is null) continue;
             var bounds = util.GetBounds(shape);
             minX = Math.Min(minX, bounds.Left);

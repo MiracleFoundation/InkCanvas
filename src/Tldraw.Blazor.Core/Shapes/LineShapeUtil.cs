@@ -8,11 +8,11 @@ namespace Tldraw.Blazor.Core.Shapes;
 /// </summary>
 public class LineShapeUtil : ShapeUtil
 {
-    public override string ShapeType => "line";
+    public override ShapeType ShapeType => ShapeType.Line;
 
     public override TLShapeRecord CreateDefault(double x, double y) => new()
     {
-        ShapeType = "line",
+        Shape = ShapeType.Line,
         X = x,
         Y = y,
         Width = 200,

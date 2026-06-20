@@ -1,8 +1,6 @@
 using SkiaSharp;
-using Tldraw.Blazor.Core;
 using Tldraw.Blazor.Core.Editor;
 using Tldraw.Blazor.Core.Store;
-using Editor = Tldraw.Blazor.Core.Editor.Editor;
 
 namespace Tldraw.Blazor.Core.Tools;
 
@@ -39,7 +37,7 @@ public class ArrowTool : StateNode
 
             var shape = new TLShapeRecord
             {
-                ShapeType = "arrow",
+                Shape = ShapeType.Arrow,
                 X = e.WorldX,
                 Y = e.WorldY,
                 Width = 0,

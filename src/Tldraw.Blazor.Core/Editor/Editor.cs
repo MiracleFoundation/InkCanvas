@@ -98,7 +98,7 @@ public class Editor
         RegisterTool(new ArrowTool());
 
         // Wire ArrowShapeUtil with Store reference for binding checks
-        if (ShapeUtils.Get(ShapeType.Arrow.ToValue()) is Shapes.ArrowShapeUtil arrowUtil)
+        if (ShapeUtils.Get(ShapeType.Arrow) is Shapes.ArrowShapeUtil arrowUtil)
             arrowUtil.Store = Store;
 
         // Activate select tool by default
@@ -151,7 +151,7 @@ public class Editor
 
 
     /// <summary>Create a shape at the given world position and add it to the store.</summary>
-    public TLShapeRecord? CreateShape(string shapeType, double x, double y)
+    public TLShapeRecord? CreateShape(ShapeType shapeType, double x, double y)
     {
         var util = ShapeUtils.Get(shapeType);
         if (util is null) return null;
@@ -251,7 +251,7 @@ public class Editor
         var asset = new TLAssetRecord
         {
             Id = assetId,
-            AssetType = "image",
+            Asset = AssetType.Image,
             Name = name,
             Src = dataUri,
             Width = width,
@@ -265,7 +265,7 @@ public class Editor
         // Create shape
         var shape = new TLShapeRecord
         {
-            ShapeType = "image",
+            Shape = Tldraw.Blazor.Core.ShapeType.Image,
             X = x,
             Y = y,
             Width = width > 0 ? width : 200,
@@ -301,7 +301,7 @@ public class Editor
 
         foreach (var shape in allShapes)
         {
-            var util = ShapeUtils.Get(shape.ShapeType);
+            var util = ShapeUtils.Get(shape.Shape);
             if (util == null) continue;
             var bounds = util.GetBounds(shape);
             minX = Math.Min(minX, bounds.Left);
@@ -323,7 +323,7 @@ public class Editor
         // Render all shapes
         foreach (var shape in allShapes.Where(s => !s.IsHidden))
         {
-            var util = ShapeUtils.Get(shape.ShapeType);
+            var util = ShapeUtils.Get(shape.Shape);
             if (util == null) continue;
             canvas.Save();
             util.Render(canvas, shape, scale);
@@ -346,7 +346,7 @@ public class Editor
 
         foreach (var shape in allShapes)
         {
-            var util = ShapeUtils.Get(shape.ShapeType);
+            var util = ShapeUtils.Get(shape.Shape);
             if (util == null) continue;
             var bounds = util.GetBounds(shape);
             minX = Math.Min(minX, bounds.Left);
@@ -385,7 +385,7 @@ public class Editor
 
         var bounds = shapes.Select(s =>
         {
-            var util = ShapeUtils.Get(s.ShapeType);
+            var util = ShapeUtils.Get(s.Shape);
             return util?.GetBounds(s) ?? new SKRect((float)s.X, (float)s.Y,
                 (float)(s.X + s.Width), (float)(s.Y + s.Height));
         }).ToList();
@@ -535,7 +535,7 @@ public class Editor
         // Create a group shape
         var group = new TLShapeRecord
         {
-            ShapeType = ShapeType.Group.ToValue(),
+            Shape = Tldraw.Blazor.Core.ShapeType.Group,
             X = shapes.Min(s => s.X),
             Y = shapes.Min(s => s.Y),
             Width = shapes.Max(s => s.X + s.Width) - shapes.Min(s => s.X),
@@ -560,14 +560,14 @@ public class Editor
     public void UngroupSelected()
     {
         var shapes = Selection.GetSelectedShapes(Store);
-        var groups = shapes.Where(s => s.ShapeType == ShapeType.Group.ToValue()).ToList();
+        var groups = shapes.Where(s => s.Shape == Tldraw.Blazor.Core.ShapeType.Group).ToList();
         if (groups.Count == 0) return;
 
         PushUndo();
 
         Selection.ClearSelection();
 
-        foreach (var group in shapes.Where(s => s.ShapeType == ShapeType.Group.ToValue()).ToList())
+        foreach (var group in shapes.Where(s => s.Shape == Tldraw.Blazor.Core.ShapeType.Group).ToList())
         {
             if (group.Props is TLGroupProps groupProps)
             {
@@ -607,9 +607,9 @@ public class Editor
         foreach (var shape in shapes)
         {
             if (shape.Id == arrowId || shape.IsLocked || shape.IsHidden) continue;
-            if (shape.ShapeType == ShapeType.Arrow.ToValue()) continue; // Don't bind to other arrows
+            if (shape.Shape == Tldraw.Blazor.Core.ShapeType.Arrow) continue; // Don't bind to other arrows
 
-            var util = ShapeUtils.Get(shape.ShapeType);
+            var util = ShapeUtils.Get(shape.Shape);
             if (util == null) continue;
 
             var bounds = util.GetBounds(shape);
@@ -627,7 +627,7 @@ public class Editor
         if (closestShape == null) return null;
 
         // Calculate normalized position on the shape's bounding box
-        var util2 = ShapeUtils.Get(closestShape.ShapeType);
+        var util2 = ShapeUtils.Get(closestShape.Shape);
         if (util2 == null) return null;
         var bounds2 = util2.GetBounds(closestShape);
 
@@ -686,7 +686,7 @@ public class Editor
             var targetShape = Store.Get<TLShapeRecord>(startBinding.ToShapeId);
             if (targetShape != null)
             {
-                var util = ShapeUtils.Get(targetShape.ShapeType);
+                var util = ShapeUtils.Get(targetShape.Shape);
                 if (util != null)
                 {
                     var bounds = util.GetBounds(targetShape);
@@ -723,7 +723,7 @@ public class Editor
             var targetShape = Store.Get<TLShapeRecord>(endBinding.ToShapeId);
             if (targetShape != null)
             {
-                var util = ShapeUtils.Get(targetShape.ShapeType);
+                var util = ShapeUtils.Get(targetShape.Shape);
                 if (util != null)
                 {
                     var bounds = util.GetBounds(targetShape);
@@ -752,7 +752,7 @@ public class Editor
     /// </summary>
     public void UpdateAllArrowBindings()
     {
-        var arrows = Store.GetAllShapes().Where(s => s.ShapeType == ShapeType.Arrow.ToValue());
+        var arrows = Store.GetAllShapes().Where(s => s.Shape == Tldraw.Blazor.Core.ShapeType.Arrow);
         foreach (var arrow in arrows)
             UpdateArrowBindings(arrow.Id);
     }
@@ -763,7 +763,7 @@ public class Editor
     /// </summary>
     public (string ArrowId, ArrowEndpoint Endpoint)? HitTestArrowEndpoint(double worldX, double worldY)
     {
-        var arrows = Store.GetAllShapes().Where(s => s.ShapeType == ShapeType.Arrow.ToValue());
+        var arrows = Store.GetAllShapes().Where(s => s.Shape == Tldraw.Blazor.Core.ShapeType.Arrow);
         var point = new SKPointd(worldX, worldY);
         float hitRadius = 12f / (float)Camera.Zoom;
 
@@ -788,9 +788,9 @@ public class Editor
         return null;
     }
 
-    private static string FractionalIndex(int pos, int total)
+    private static ZIndex FractionalIndex(int pos, int total)
     {
-        return "a" + pos.ToString("D6");
+        return new ZIndex("a" + pos.ToString("D6"));
     }
 
 
@@ -816,7 +816,7 @@ public class Editor
             var shape = shapes[i];
             if (shape.IsLocked || shape.IsHidden) continue;
 
-            var util = ShapeUtils.Get(shape.ShapeType);
+            var util = ShapeUtils.Get(shape.Shape);
             if (util != null && util.HitTest(shape, point))
             {
                 // If shape has text (geo with text, or text/note), switch to text tool for editing
@@ -1095,7 +1095,7 @@ public class Editor
         {
             if (shape.IsHidden) continue;
 
-            var util = ShapeUtils.Get(shape.ShapeType);
+            var util = ShapeUtils.Get(shape.Shape);
             if (util is null) continue;
 
             // Viewport culling: skip shapes outside visible area

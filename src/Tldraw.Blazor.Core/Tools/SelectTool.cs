@@ -152,7 +152,7 @@ public class SelectTool : StateNode
                 var shape = shapes[i];
                 if (shape.IsLocked || shape.IsHidden) continue;
 
-                var util = Editor.ShapeUtils.Get(shape.ShapeType);
+                var util = Editor.ShapeUtils.Get(shape.Shape);
                 if (util != null && util.HitTest(shape, point))
                     return shape;
             }
@@ -282,7 +282,7 @@ public class SelectTool : StateNode
             foreach (var shape in shapes)
             {
                 if (shape.IsLocked || shape.IsHidden) continue;
-                var util = Editor.ShapeUtils.Get(shape.ShapeType);
+                var util = Editor.ShapeUtils.Get(shape.Shape);
                 if (util == null) continue;
                 if (RectsIntersect(brushRect, util.GetBounds(shape)))
                     Editor.Selection.Select(shape.Id);

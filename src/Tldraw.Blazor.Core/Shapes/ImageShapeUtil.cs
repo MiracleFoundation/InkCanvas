@@ -8,14 +8,14 @@ namespace Tldraw.Blazor.Core.Shapes;
 /// </summary>
 public class ImageShapeUtil : ShapeUtil
 {
-    public override string ShapeType => "image";
+    public override ShapeType ShapeType => ShapeType.Image;
 
     /// <summary>Cache of loaded images by asset ID.</summary>
     private static readonly Dictionary<string, SKBitmap> _imageCache = new();
 
     public override TLShapeRecord CreateDefault(double x, double y) => new()
     {
-        ShapeType = "image",
+        Shape = ShapeType.Image,
         X = x,
         Y = y,
         Width = 200,

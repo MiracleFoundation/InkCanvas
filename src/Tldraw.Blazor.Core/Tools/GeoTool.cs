@@ -44,7 +44,7 @@ public class GeoTool : StateNode
             // Create shape with zero size at start point
             var shape = new TLShapeRecord
             {
-                ShapeType = "geo",
+                Shape = Tldraw.Blazor.Core.ShapeType.Geo,
                 X = e.WorldX,
                 Y = e.WorldY,
                 Width = 0,
