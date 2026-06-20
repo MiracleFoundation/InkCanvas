@@ -115,7 +115,7 @@
     {
         if (Enum.TryParse<StateId>(toolId, true, out var id))
             _editor.SetActiveTool(id);
-        StateHasChanged();
+        // SetActiveTool already calls Invalidate() → StateChanged → StateHasChanged
     }
 
     private void SetGeoTool(string geoType)
@@ -125,7 +125,7 @@
         if (geoTool != null && Enum.TryParse<GeoVariant>(geoType, true, out var variant))
             geoTool.GeoType = variant;
         _editor.SetActiveTool(StateId.Geo);
-        StateHasChanged();
+        // SetActiveTool already calls Invalidate() → StateChanged → StateHasChanged
     }
 
     private void OnContextMenu(MouseEventArgs e)
@@ -135,17 +135,22 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _editor.StateChanged += () => InvokeAsync(StateHasChanged);
+        _editor.StateChanged += OnEditorStateChanged;
 
         await LoadFromStorage();
 
         _autoSaveTimer = new System.Threading.Timer(async _ =>
         {
-            await SaveToStorage();
+            await InvokeAsync(async () => await SaveToStorage());
         }, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
 
         if (_editor.Store.GetAllShapes().Count == 0)
             CreateDemoShapes();
+    }
+
+    private void OnEditorStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     private async Task SaveToStorage()
@@ -269,5 +274,6 @@
     public void Dispose()
     {
         _autoSaveTimer?.Dispose();
+        _editor.StateChanged -= OnEditorStateChanged;
     }
 }
